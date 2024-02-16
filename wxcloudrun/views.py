@@ -135,7 +135,7 @@ def get_count():
         app.logger.info(completion.choices[0].message)
 
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
+        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message.content})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
