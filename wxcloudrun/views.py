@@ -132,7 +132,7 @@ def get_count():
             messages=messages,
             temperature=0.3,
         )
-
+        app.logger.info(completion.choices[0].message)
 
         # 返回成功消息和文件路径
         return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
