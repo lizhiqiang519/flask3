@@ -1,4 +1,6 @@
 from datetime import datetime
+from pathlib import Path
+
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
@@ -7,9 +9,15 @@ from wxcloudrun.response import make_succ_empty_response, make_succ_response, ma
 import os
 import logging
 import requests
+from openai import OpenAI
 
 # 配置日志记录
 logging.basicConfig(level=logging.INFO)
+
+client = OpenAI(
+    api_key="Y2xlNTY0a2JidmRqa2ZqazU3dDA6bXNrLUNSN0dGVmU0UHJvUzlialpGZnVjTzJud3FrNU0=",
+    base_url="https://api.moonshot.cn/v1",
+)
 
 @app.route('/')
 def index():
@@ -95,8 +103,39 @@ def get_count():
         with open(file_path, 'wb') as f:
             f.write(response.content)
 
+        #暗面AI
+        # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
+        file_object = client.files.create(file=Path(file_path), purpose="file-extract")
+
+        # 获取结果
+        # file_content = client.files.retrieve_content(file_id=file_object.id)
+        # 注意，之前 retrieve_content api 在最新版本标记了 warning, 可以用下面这行代替
+        # 如果是旧版本，可以用 retrieve_content
+        file_content = client.files.content(file_id=file_object.id).text
+
+        # 把它放进请求中
+        messages = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
+            {"role": "user", "content": "请简单介绍 downloaded.pdf 讲了啥"},
+        ]
+
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion = client.chat.completions.create(
+            model="moonshot-v1-128k",
+            messages=messages,
+            temperature=0.3,
+        )
+
+
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'path': file_path})
+        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
