@@ -123,7 +123,7 @@ def get_count():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "整理downloaded.pdf里面的知识点，并按照章节顺序整理出20道选择题，并且给出对应的答案、解释、答案来源"},
+            {"role": "user", "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源。选择项是从A到D。"},
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
