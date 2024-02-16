@@ -4,7 +4,11 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
+import os
+import logging
 
+# 配置日志记录
+logging.basicConfig(level=logging.INFO)
 
 @app.route('/')
 def index():
@@ -63,4 +67,7 @@ def get_count():
     :return: 计数的值
     """
     counter = Counters.query.filter(Counters.id == 1).first()
+    current_path = os.getcwd()
+    app.logger.info('12323111')
+    app.logger.info(current_path)
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
