@@ -124,7 +124,7 @@ def get_count():
                 "content": file_content,
             },
             {"role": "user", "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源（具体到章节）。返回数据的格式是list。list元素要包含这几个string类型属性：question（问题）、"
-                                        "optionA(选项A)、optionB(选项B)、optionC(选项C)、optionD(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+                                        + "optionA(选项A)、optionB(选项B)、optionC(选项C)、optionD(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
@@ -133,10 +133,11 @@ def get_count():
             messages=messages,
             temperature=0.3,
         )
-        app.logger.info(completion.choices[0].message.content)
+        app.logger.info(completion.choices[0])
+        app.logger.info(completion)
 
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message.content})
+        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
