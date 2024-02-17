@@ -15,7 +15,7 @@ from openai import OpenAI
 logging.basicConfig(level=logging.INFO)
 
 client = OpenAI(
-    api_key="Y2xlNTY0a2JidmRqa2ZqazU3dDA6bXNrLUNSN0dGVmU0UHJvUzlialpGZnVjTzJud3FrNU0=",
+    api_key="sk-MLYNp6HXoDRx7kFKiPRxCO8BLoejH9tfzcGq3OANtoY1r1bG",
     base_url="https://api.moonshot.cn/v1",
 )
 
