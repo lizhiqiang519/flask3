@@ -123,8 +123,8 @@ def get_count():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源（具体到章节）。返回数据的格式是list。list元素要包含这几个string类型属性：question（问题）、"
-                                        + "optionA(选项A)、optionB(选项B)、optionC(选项C)、optionD(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+            {"role": "user", "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源（具体到章节）。先生成list，最后生成为MySQL的执行脚本。list元素要包含这几个string类型属性：question（问题）、"
+                                        + "optionA(选项A)、optionB(选项B)、optionC(选项C)、optionD(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。然后将list转化为MySQL表ask表的记录的脚本，最后提供的是MySQL执行脚本。"},
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
