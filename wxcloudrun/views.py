@@ -15,7 +15,7 @@ from openai import OpenAI
 logging.basicConfig(level=logging.INFO)
 
 client = OpenAI(
-    api_key="sk-MLYNp6HXoDRx7kFKiPRxCO8BLoejH9tfzcGq3OANtoY1r1bG",
+    api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",
     base_url="https://api.moonshot.cn/v1",
 )
 
@@ -112,6 +112,8 @@ def get_count():
         # 注意，之前 retrieve_content api 在最新版本标记了 warning, 可以用下面这行代替
         # 如果是旧版本，可以用 retrieve_content
         file_content = client.files.content(file_id=file_object.id).text
+
+        #保存：fileID、原来文件名、下载链接、pdf封面URL、大小
 
         # 把它放进请求中
         messages = [
