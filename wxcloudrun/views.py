@@ -216,7 +216,7 @@ def upload_pdf():
         #保存：fileID、原来文件名、下载链接、pdf封面URL、大小
 
         # 把它放进请求中
-        messages = [
+        messages1 = [
             {
                 "role": "system",
                 "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
@@ -232,14 +232,35 @@ def upload_pdf():
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion = client.chat.completions.create(
             model="moonshot-v1-128k",
-            messages=messages,
+            messages=messages1,
             temperature=0.3,
         )
         app.logger.info(completion.choices[0].message.content)
-        app.logger.info(completion)
+
+        messages2 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": completion.choices[0].message.content,
+            },
+            {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：question（问题）、"
+                                        + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。"},
+        ]
+
+
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion2 = client.chat.completions.create(
+            model="moonshot-v1-8k",
+            messages=messages2,
+            temperature=0.3,
+        )
+        app.logger.info(completion2.choices[0].message.content)
 
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
+        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion2.choices[0].message})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
