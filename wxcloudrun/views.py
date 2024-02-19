@@ -247,7 +247,7 @@ def upload_pdf():
                 "content": completion.choices[0].message.content,
             },
             {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：question（问题）、"
-                                        + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。"},
+                                        + "option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节，包括序号）。"},
         ]
 
 
@@ -257,10 +257,13 @@ def upload_pdf():
             messages=messages2,
             temperature=0.3,
         )
-        app.logger.info(completion2.choices[0].message.content)
+        app.logger.info("mysql执行的脚本")
+        app.logger.info(completion2.choices[0].message)
+
+
 
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'zongjie': completion2.choices[0].message})
+        return jsonify({'message': 'File downloaded successfully', 'sql': completion2.choices[0].message.content})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
