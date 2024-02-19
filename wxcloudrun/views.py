@@ -11,6 +11,7 @@ import os
 import logging
 import requests
 from openai import OpenAI
+import re
 
 from urllib.parse import urlparse, unquote
 
@@ -248,7 +249,7 @@ def upload_pdf():
                 "content": completion.choices[0].message.content,
             },
             {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：id(主键，自增)、question（问题,varchar(255))、"
-                                        + "option_a(varchar(255),选项A)、option_b(varchar(255),选项B)、option_c(varchar(255),选项C)、option_d(varchar(255),选项D)、answer（varchar(255),答案，单选A或B或C或D）、explain（varchar(255),答案详细分析解释、知识点复述）、source（varchar(255),答案来源，具体到哪一章哪一节，包括序号）。仅需要提供可以直接执行的最终sql脚本，即```sql和```之间的内容。"},
+                                        + "option_a(varchar(255),选项A)、option_b(varchar(255),选项B)、option_c(varchar(255),选项C)、option_d(varchar(255),选项D)、answer（varchar(255),答案，单选A或B或C或D）、explain（varchar(255),答案详细分析解释、知识点复述）、source（varchar(255),答案来源，具体到哪一章哪一节，包括序号）。仅需要提供可以直接执行的最终sql脚本。"},
         ]
 
 
@@ -258,12 +259,24 @@ def upload_pdf():
             messages=messages2,
             temperature=0.3,
         )
+
+        text = completion2.choices[0].message.content
+
+        # 使用正则表达式匹配 ```sql 和 ``` 之间的内容
+        pattern = re.compile(r"```sql(.*?)```", re.DOTALL)
+        matches = pattern.findall(text)
+
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_sql = '\n\n'.join(matches)
+
+
         app.logger.info("mysql执行的脚本")
+        app.logger.info(extracted_sql)
+        app.logger.info("-------------------------------------------------")
         app.logger.info(completion2.choices[0].message.content)
 
         record = Records()
-        record.id = 1
-        record.remark = completion2.choices[0].message.content
+        record.remark =extracted_sql
         record.created_at = datetime.now()
         insert_records(record)
 
