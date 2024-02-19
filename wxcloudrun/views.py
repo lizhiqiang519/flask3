@@ -273,14 +273,17 @@ def upload_pdf():
         # 移除 (数字, 格式的字符串
         processed_text = re.sub(r"\(\d+, ", "(", extracted_sql)
 
+        # 使用正则表达式过滤掉大写字母加英文逗号（和可能的空格）格式的字符串
+        # 正则表达式匹配大写字母后跟一个点和空格，如 "A. " 或 "B. "
+        filtered_text = re.sub(r"\b[A-Z]\. ", "", processed_text)
 
         app.logger.info("mysql执行的脚本")
-        app.logger.info(processed_text)
+        app.logger.info(filtered_text)
         app.logger.info("-------------------------------------------------")
         app.logger.info(completion2.choices[0].message.content)
 
         record = Records()
-        record.remark =processed_text
+        record.remark =filtered_text
         record.created_at = datetime.now()
         insert_records(record)
 
