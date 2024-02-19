@@ -182,7 +182,7 @@ def upload_pdf():
 
     try:
         # 使用requests下载文件
-        response = requests.get(url)
+        response = requests.get(downloadURL)
         response.raise_for_status()  # 确保请求成功
 
         # 解析 URL 并提取文件名
