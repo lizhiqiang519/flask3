@@ -269,14 +269,18 @@ def upload_pdf():
         # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
         extracted_sql = '\n\n'.join(matches)
 
+        # 使用正则表达式处理文本
+        # 移除 (数字, 格式的字符串
+        processed_text = re.sub(r"\(\d+, ", "(", extracted_sql)
+
 
         app.logger.info("mysql执行的脚本")
-        app.logger.info(extracted_sql)
+        app.logger.info(processed_text)
         app.logger.info("-------------------------------------------------")
         app.logger.info(completion2.choices[0].message.content)
 
         record = Records()
-        record.remark =extracted_sql
+        record.remark =processed_text
         record.created_at = datetime.now()
         insert_records(record)
 
