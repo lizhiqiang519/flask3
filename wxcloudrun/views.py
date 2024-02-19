@@ -3,8 +3,9 @@ from pathlib import Path
 
 from flask import render_template, request, jsonify
 from run import app
-from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
+from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid,insert_records
 from wxcloudrun.model import Counters
+from wxcloudrun.modelRecord import Records
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import os
 import logging
@@ -225,7 +226,7 @@ def upload_pdf():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"提供20道书中重要知识点相关的选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
+            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"提供5道书中重要知识点相关的选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
                                         + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。并且提供给表添加选择题的记录的sql脚本"},
         ]
 
@@ -258,8 +259,13 @@ def upload_pdf():
             temperature=0.3,
         )
         app.logger.info("mysql执行的脚本")
-        app.logger.info(completion2.choices[0].message)
+        app.logger.info(completion2.choices[0].message.content)
 
+        record = Records()
+        record.id = 1
+        record.remark = completion2.choices[0].message.content
+        record.created_at = datetime.now()
+        insert_records(record)
 
 
         # 返回成功消息和文件路径

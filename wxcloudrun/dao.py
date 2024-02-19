@@ -62,3 +62,15 @@ def update_counterbyid(counter):
         db.session.commit()
     except OperationalError as e:
         logger.info("update_counterbyid errorMsg= {} ".format(e))
+
+
+def insert_records(records):
+    """
+    插入一个Counter实体
+    :param counter: Counters实体
+    """
+    try:
+        db.session.add(records)
+        db.session.commit()
+    except OperationalError as e:
+        logger.info("insert_counter errorMsg= {} ".format(e))
