@@ -246,8 +246,8 @@ def upload_pdf():
                 "role": "system",
                 "content": completion.choices[0].message.content,
             },
-            {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：question（问题）、"
-                                        + "option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节，包括序号）。"},
+            {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：id(主键，自增)、question（问题,varchar(255))、"
+                                        + "option_a(varchar(255),选项A)、option_b(varchar(255),选项B)、option_c(varchar(255),选项C)、option_d(varchar(255),选项D)、answer（varchar(255),答案，单选A或B或C或D）、explain（varchar(255),答案详细分析解释、知识点复述）、source（varchar(255),答案来源，具体到哪一章哪一节，包括序号）"},
         ]
 
 
