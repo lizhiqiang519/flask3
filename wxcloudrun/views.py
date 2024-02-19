@@ -163,11 +163,11 @@ def upload_pdf():
     print(f"PDF Name: {pdfName}")
 
     # 返回响应
-    return jsonify({
-        "message": "Data received",
-        "downloadURL": downloadURL,
-        "pdfName": pdfName
-    })
+    # return jsonify({
+    #     "message": "Data received",
+    #     "downloadURL": downloadURL,
+    #     "pdfName": pdfName
+    # })
 
     #当前目录
     current_path = os.getcwd()
