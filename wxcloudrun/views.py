@@ -166,6 +166,8 @@ def upload_pdf():
     print(f"Download URL: {downloadURL}")
     print(f"PDF Name: {pdfName}")
 
+    app.logger.info("传进来的下载链接= %s,PDF名称= %s", downloadURL, pdfName)
+
     # 返回响应
     # return jsonify({
     #     "message": "Data received",
@@ -179,7 +181,6 @@ def upload_pdf():
     app.logger.info(current_path)
 
     # 从请求体获取下载链接
-    # url = "https://7064-pdf-8g1671jo5043b0ee-1306680641.tcb.qcloud.la/pdf/1707709258291.pdf?sign=085fac18606ee7a956561d760473410f&t=1708064004"
     if not downloadURL:
         return jsonify({'error': 'Missing URL'}), 400
 
@@ -209,6 +210,7 @@ def upload_pdf():
         # 暗面AI
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
+        app.logger.info("文件名称= %s,文件ID= %s",file_object.filename,file_object.id)
 
         # 获取结果
         # file_content = client.files.retrieve_content(file_id=file_object.id)
@@ -217,6 +219,7 @@ def upload_pdf():
         file_content = client.files.content(file_id=file_object.id).text
 
         # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
+        app.logger.info("文件ID= %s,文件内容= %s", file_object.id, file_content)
 
         # 把它放进请求中
         messages1 = [
