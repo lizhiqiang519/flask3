@@ -4,7 +4,8 @@ from pathlib import Path
 
 from flask import render_template, request, jsonify
 from run import app
-from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records
+from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
+    insert_questions
 from wxcloudrun.model import Counters
 from wxcloudrun.modelRecord import Records
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
@@ -21,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 
 client = OpenAI(
     # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
-    api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",
+    api_key="sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV",
     base_url="https://api.moonshot.cn/v1",
 )
 
@@ -227,72 +228,115 @@ def upload_pdf():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个老师，请针对" + filename + ".pdf" + "的前三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的前三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"}
+        ]
+
+        messages2 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
 
             {"role": "user",
-             "content": "你是一个老师，请针对" + filename + ".pdf" + "的中间三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的中间三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"}
+        ]
 
+        messages3 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
             {"role": "user",
              "content": "你是一个老师，请针对" + filename + ".pdf" + "的后三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"}
         ]
 
-
-
         # 然后调用 chat-completion, 获取 kimi 的回答
-        completion = client.chat.completions.create(
+        completion1 = client.chat.completions.create(
             model="moonshot-v1-32k",
             messages=messages1,
             temperature=0.3,
         )
-        app.logger.info("-----------------------json-----------------------")
-        app.logger.info(completion.choices[0].message.content)
-
-        app.logger.info("-----------------------completion-----------------------")
-        app.logger.info(completion)
-        record3 = Records()
-        record3.remark = str(completion)
-        record3.remark2 = "completion"
-        record3.created_at = datetime.now()
-        insert_records(record3)
-
-
-        text = completion.choices[0].message.content
-
-        record1 = Records()
-        record1.remark = text
-        record1.remark2 = "text"
-        record1.created_at = datetime.now()
-        insert_records(record1)
-
+        #------------------------1------------------------------
+        #第一次返回的答案
+        text1 = completion1.choices[0].message.content
         # 使用正则表达式匹配 ```json 和 ``` 之间的内容
         pattern = re.compile(r"```json(.*?)```", re.DOTALL)
-        matches = pattern.findall(text)
-
+        matches = pattern.findall(text1)
         # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
-        extracted_json = '\n\n'.join(matches)
+        extracted_json1 = '\n\n'.join(matches)
+        #转成list
+        my_list1 = json.loads(extracted_json1)
 
-        record2 = Records()
-        record2.remark = text
-        record2.remark2 = "json"
-        record2.created_at = datetime.now()
-        insert_records(record2)
+        #--------------------------2--------------------------------
 
-        app.logger.info("mysql执行的脚本")
-        app.logger.info(extracted_json)
-        app.logger.info("-------------------------extracted_json------------------------")
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion2 = client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messages2,
+            temperature=0.3,
+        )
+        #第一次返回的答案
+        text2 = completion2.choices[0].message.content
+        # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text2)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json2 = '\n\n'.join(matches)
+        #转成list
+        my_list2 = json.loads(extracted_json2)
 
-        my_list = json.loads(extracted_json)
+        # --------------------------3-------------------------------
 
-        app.logger.info("-----------------------my_list-----------------------")
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion3 = client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messages3,
+            temperature=0.3,
+        )
+        # 第一次返回的答案
+        text3 = completion3.choices[0].message.content
+        # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text3)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json3 = '\n\n'.join(matches)
+        # 转成list
+        my_list3 = json.loads(extracted_json3)
+
+        my_list = my_list1 + my_list2+ my_list3;
+        app.logger.info('my_list:')
         app.logger.info(my_list)
 
-        record = Records()
-        record.remark = extracted_json
-        record.created_at = datetime.now()
-        insert_records(record)
+        """
+        处理问题列表并插入到数据库
+        :param questions_list: 包含多个问题字典的列表
+        """
+        for question_dict in my_list:
+            # 创建 Records 实例，确保字段匹配
+            question_record = Records(
+                question=question_dict.get('question', ''),
+                option_a=question_dict.get('option_a', ''),
+                option_b=question_dict.get('option_b', ''),
+                option_c=question_dict.get('option_c', ''),
+                option_d=question_dict.get('option_d', ''),
+                answer=question_dict.get('answer', ''),
+                fenxi=question_dict.get('fenxi', ''),
+                source=question_dict.get('source', '')
+            )
+            # 调用插入方法
+            app.logger.info("question_record888")
+            insert_questions(question_record)
 
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'sql': completion.choices[0].message.content})
+        return jsonify({'message': 'successfully'})
 
     # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:

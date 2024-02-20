@@ -73,4 +73,15 @@ def insert_records(records):
         db.session.add(records)
         db.session.commit()
     except OperationalError as e:
-        logger.info("insert_counter errorMsg= {} ".format(e))
+        logger.info("insert_records errorMsg= {} ".format(e))
+
+def insert_questions(questions):
+    """
+    插入一个questions实体
+    :param questions: Questions实体
+    """
+    try:
+        db.session.add(questions)
+        db.session.commit()
+    except OperationalError as e:
+        logger.info("insert_questions errorMsg= {} ".format(e))
