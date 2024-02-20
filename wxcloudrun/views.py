@@ -241,27 +241,6 @@ def upload_pdf():
         app.logger.info("-----------------------json-----------------------")
         app.logger.info(completion.choices[0].message.content)
 
-        messages2 = [
-            {
-                "role": "system",
-                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
-            },
-            {
-                "role": "system",
-                "content": completion.choices[0].message.content,
-            },
-            {"role": "user", "content": "帮我整理选择题的格式，最终提供MySQL的执行脚本，因为我需要把这些选择题逐一插入到MySQL的ask表中，表字段分别是：id(主键，自增)、question（问题,varchar(255))、"
-                                        + "option_a(varchar(255),选项A)、option_b(varchar(255),选项B)、option_c(varchar(255),选项C)、option_d(varchar(255),选项D)、answer（varchar(255),答案，单选A或B或C或D）、fenxi（varchar(255),答案详细分析解释、知识点复述）、source（varchar(255),答案来源，具体到哪一章哪一节的哪个知识点）。仅需要提供可以直接执行的最终sql脚本。"},
-        ]
-
-
-        # 然后调用 chat-completion, 获取 kimi 的回答
-        completion2 = client.chat.completions.create(
-            model="moonshot-v1-8k",
-            messages=messages2,
-            temperature=0.3,
-        )
-
         text = completion.choices[0].message.content
 
         record1 = Records()
@@ -274,40 +253,31 @@ def upload_pdf():
         pattern = re.compile(r"```json(.*?)```", re.DOTALL)
         matches = pattern.findall(text)
 
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json = '\n\n'.join(matches)
+
         record2 = Records()
         record2.remark =text
         record2.remark2 = "json"
         record2.created_at = datetime.now()
         insert_records(record2)
 
-        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
-        extracted_sql = '\n\n'.join(matches)
-
-        # 使用正则表达式处理文本
-        # 移除 (数字, 格式的字符串
-        processed_text = re.sub(r"\(\d+, ", "(", extracted_sql)
-
-        # 使用正则表达式过滤掉大写字母加英文逗号（和可能的空格）格式的字符串
-        # 正则表达式匹配大写字母后跟一个点和空格，如 "A. " 或 "B. "
-        # filtered_text = re.sub(r"\b[A-Z]\. ", "", processed_text)
-
         app.logger.info("mysql执行的脚本")
-        app.logger.info(extracted_sql)
+        app.logger.info(extracted_json)
         app.logger.info("-------------------------------------------------")
 
-        my_list = json.loads(extracted_sql)
+        my_list = json.loads(extracted_json)
 
         app.logger.info("-----------------------my_list-----------------------")
         app.logger.info(my_list)
 
         record = Records()
-        record.remark =extracted_sql
+        record.remark =extracted_json
         record.created_at = datetime.now()
         insert_records(record)
 
-
         # 返回成功消息和文件路径
-        return jsonify({'message': 'File downloaded successfully', 'sql': completion2.choices[0].message.content})
+        return jsonify({'message': 'File downloaded successfully', 'sql': completion.choices[0].message.content})
 
     #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
