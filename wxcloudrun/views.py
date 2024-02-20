@@ -211,7 +211,7 @@ def upload_pdf():
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
         app.logger.info("文件名称= %s,文件ID= %s",file_object.filename,file_object.id)
-        app.logger.info("文件路径= %s,文件对象= %s", file_path, file_object)
+        app.logger.info("文件路径= %s,文件大小= %s kb", file_path, file_object.bytes / 1024)
 
         # 获取结果
         # file_content = client.files.retrieve_content(file_id=file_object.id)
