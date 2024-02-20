@@ -222,7 +222,7 @@ def upload_pdf():
         file_content = client.files.content(file_id=file_object.id).text
 
         # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
-        app.logger.info("文件ID= %s,文件内容= %s", file_object.id)
+        app.logger.info("文件ID= %s", file_object.id)
 
 
         file = File()
