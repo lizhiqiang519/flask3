@@ -241,11 +241,6 @@ def upload_pdf():
         app.logger.info("-----------------------json-----------------------")
         app.logger.info(completion.choices[0].message.content)
 
-        my_list = json.loads(completion.choices[0].message.content)
-
-        app.logger.info("-----------------------my_list-----------------------")
-        app.logger.info(my_list)
-
         messages2 = [
             {
                 "role": "system",
@@ -287,10 +282,14 @@ def upload_pdf():
         app.logger.info("mysql执行的脚本")
         app.logger.info(extracted_sql)
         app.logger.info("-------------------------------------------------")
-        app.logger.info(completion2.choices[0].message.content)
+
+        my_list = json.loads(extracted_sql)
+
+        app.logger.info("-----------------------my_list-----------------------")
+        app.logger.info(my_list)
 
         record = Records()
-        record.remark =completion.choices[0].message.content
+        record.remark =extracted_sql
         record.created_at = datetime.now()
         insert_records(record)
 
