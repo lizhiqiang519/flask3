@@ -267,10 +267,10 @@ def upload_pdf():
             temperature=0.3,
         )
 
-        text = completion2.choices[0].message.content
+        text = completion.choices[0].message.content
 
-        # 使用正则表达式匹配 ```sql 和 ``` 之间的内容
-        pattern = re.compile(r"```sql(.*?)```", re.DOTALL)
+        # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
         matches = pattern.findall(text)
 
         # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
@@ -285,7 +285,7 @@ def upload_pdf():
         # filtered_text = re.sub(r"\b[A-Z]\. ", "", processed_text)
 
         app.logger.info("mysql执行的脚本")
-        app.logger.info(processed_text)
+        app.logger.info(extracted_sql)
         app.logger.info("-------------------------------------------------")
         app.logger.info(completion2.choices[0].message.content)
 
