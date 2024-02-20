@@ -329,7 +329,8 @@ def upload_pdf():
                 option_d=question_dict.get('option_d', ''),
                 answer=question_dict.get('answer', ''),
                 fenxi=question_dict.get('fenxi', ''),
-                source=question_dict.get('source', '')
+                source=question_dict.get('source', ''),
+                created_at = datetime.now()
             )
             # 调用插入方法
             app.logger.info("question_record888")
