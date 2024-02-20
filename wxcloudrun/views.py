@@ -227,7 +227,7 @@ def upload_pdf():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"提供5道书中重要知识点相关的选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
+            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"提供10道书中重要知识点相关的选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
                                         + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。并且提供给表添加选择题的记录的sql脚本"},
         ]
 
