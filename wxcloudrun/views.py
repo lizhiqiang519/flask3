@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from pathlib import Path
 
@@ -227,7 +228,7 @@ def upload_pdf():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"针对pdf上部分内容，提供10道书中重要知识点相关的选择题，并且给出对应的option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。每道选择题对象用map存放，然后存放到一个list中，然后将这个list转化为json字符串再返回。"
+            {"role": "user", "content": "充分阅读"+ filename +".pdf," +"针对pdf上部分内容，提供10道书中重要知识点相关的选择题，并且给出对应的option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。每道选择题对象用map存放，然后存放到一个list中，然后将这个list转化为json字符串再返回。"
                                     },
         ]
 
@@ -237,7 +238,13 @@ def upload_pdf():
             messages=messages1,
             temperature=0.3,
         )
+        app.logger.info("-----------------------json-----------------------")
         app.logger.info(completion.choices[0].message.content)
+
+        my_list = json.loads(completion.choices[0].message.content)
+
+        app.logger.info("-----------------------my_list-----------------------")
+        app.logger.info(my_list)
 
         messages2 = [
             {
@@ -283,7 +290,7 @@ def upload_pdf():
         app.logger.info(completion2.choices[0].message.content)
 
         record = Records()
-        record.remark =processed_text
+        record.remark =completion.choices[0].message.content
         record.created_at = datetime.now()
         insert_records(record)
 
