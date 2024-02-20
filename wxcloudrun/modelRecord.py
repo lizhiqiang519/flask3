@@ -11,4 +11,5 @@ class Records(db.Model):
     # 设定结构体对应表格的字段
     id = db.Column(db.Integer, primary_key=True)
     remark = db.Column(db.TEXT, default=1)
+    remark2 = db.Column(db.TEXT, default="")
     created_at = db.Column('createdAt', db.TIMESTAMP, nullable=False, default=datetime.now())

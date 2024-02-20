@@ -264,9 +264,21 @@ def upload_pdf():
 
         text = completion.choices[0].message.content
 
+        record1 = Records()
+        record1.remark =text
+        record1.remark2 = "text"
+        record1.created_at = datetime.now()
+        insert_records(record1)
+
         # 使用正则表达式匹配 ```json 和 ``` 之间的内容
         pattern = re.compile(r"```json(.*?)```", re.DOTALL)
         matches = pattern.findall(text)
+
+        record2 = Records()
+        record2.remark =text
+        record2.remark2 = "json"
+        record2.created_at = datetime.now()
+        insert_records(record2)
 
         # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
         extracted_sql = '\n\n'.join(matches)
