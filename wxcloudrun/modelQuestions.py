@@ -4,7 +4,7 @@ from wxcloudrun import db
 
 
 # 计数表
-class Records(db.Model):
+class Questions(db.Model):
     # 设置结构体表格名称
     __tablename__ = 'Questions'
 

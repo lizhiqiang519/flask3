@@ -7,6 +7,7 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
     insert_questions
 from wxcloudrun.model import Counters
+from wxcloudrun.modelQuestions import Questions
 from wxcloudrun.modelRecord import Records
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import os
@@ -321,7 +322,7 @@ def upload_pdf():
         """
         for question_dict in my_list:
             # 创建 Records 实例，确保字段匹配
-            question_record = Records(
+            question_record = Questions(
                 question=question_dict.get('question', ''),
                 option_a=question_dict.get('option_a', ''),
                 option_b=question_dict.get('option_b', ''),
