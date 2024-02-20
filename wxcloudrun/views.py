@@ -4,7 +4,7 @@ from pathlib import Path
 
 from flask import render_template, request, jsonify
 from run import app
-from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid,insert_records
+from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records
 from wxcloudrun.model import Counters
 from wxcloudrun.modelRecord import Records
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
@@ -16,7 +16,6 @@ import re
 
 from urllib.parse import urlparse, unquote
 
-
 # 配置日志记录
 logging.basicConfig(level=logging.INFO)
 
@@ -25,6 +24,7 @@ client = OpenAI(
     api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",
     base_url="https://api.moonshot.cn/v1",
 )
+
 
 @app.route('/')
 def index():
@@ -87,7 +87,6 @@ def get_count():
     app.logger.info('12323111')
     app.logger.info(current_path)
 
-
     # 从请求体获取下载链接
     url = "https://7064-pdf-8g1671jo5043b0ee-1306680641.tcb.qcloud.la/pdf/1707709258291.pdf?sign=085fac18606ee7a956561d760473410f&t=1708064004"
     if not url:
@@ -110,7 +109,7 @@ def get_count():
         with open(file_path, 'wb') as f:
             f.write(response.content)
 
-        #暗面AI
+        # 暗面AI
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
 
@@ -120,7 +119,7 @@ def get_count():
         # 如果是旧版本，可以用 retrieve_content
         file_content = client.files.content(file_id=file_object.id).text
 
-        #保存：fileID、原来文件名、下载链接、pdf封面URL、大小
+        # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
 
         # 把它放进请求中
         messages = [
@@ -132,8 +131,9 @@ def get_count():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
-                                        + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。并且提供给表添加选择题的记录的sql脚本"},
+            {"role": "user",
+             "content": "充分阅读downloaded.pdf，先整理里面的重要的知识点，根据重要知识点提供20道选择题，并且给出对应的答案、解释、答案来源（具体到章节）。最后提供的是MySQL的执行脚本。MySQL数据库表是ask表，表字段分别是：question（问题）、"
+                        + "optio_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、explain（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）。并且提供给表添加选择题的记录的sql脚本"},
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
@@ -148,10 +148,9 @@ def get_count():
         # 返回成功消息和文件路径
         return jsonify({'message': 'File downloaded successfully', 'zongjie': completion.choices[0].message})
 
-    #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+    # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
-
 
 
 @app.route('/api/pdf', methods=['POST'])
@@ -172,11 +171,10 @@ def upload_pdf():
     #     "pdfName": pdfName
     # })
 
-    #当前目录
+    # 当前目录
     current_path = os.getcwd()
     app.logger.info('当前所在目录:')
     app.logger.info(current_path)
-
 
     # 从请求体获取下载链接
     # url = "https://7064-pdf-8g1671jo5043b0ee-1306680641.tcb.qcloud.la/pdf/1707709258291.pdf?sign=085fac18606ee7a956561d760473410f&t=1708064004"
@@ -206,7 +204,7 @@ def upload_pdf():
         with open(file_path, 'wb') as f:
             f.write(response.content)
 
-        #暗面AI
+        # 暗面AI
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
 
@@ -216,7 +214,7 @@ def upload_pdf():
         # 如果是旧版本，可以用 retrieve_content
         file_content = client.files.content(file_id=file_object.id).text
 
-        #保存：fileID、原来文件名、下载链接、pdf封面URL、大小
+        # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
 
         # 把它放进请求中
         messages1 = [
@@ -228,9 +226,17 @@ def upload_pdf():
                 "role": "system",
                 "content": file_content,
             },
-            {"role": "user", "content": "你是一个老师，请针对"+ filename +".pdf" +"的前三分之一部分的内容，提供6道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"
-                                    },
+            {"role": "user",
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的前三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+
+            {"role": "user",
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的中间三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"},
+
+            {"role": "user",
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的后三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A)、option_b(选项B)、option_c(选项C)、option_d(选项D)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节）"}
         ]
+
+
 
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion = client.chat.completions.create(
@@ -241,10 +247,13 @@ def upload_pdf():
         app.logger.info("-----------------------json-----------------------")
         app.logger.info(completion.choices[0].message.content)
 
+        app.logger.info("-----------------------completion-----------------------")
+        app.logger.info(completion)
+
         text = completion.choices[0].message.content
 
         record1 = Records()
-        record1.remark =text
+        record1.remark = text
         record1.remark2 = "text"
         record1.created_at = datetime.now()
         insert_records(record1)
@@ -257,7 +266,7 @@ def upload_pdf():
         extracted_json = '\n\n'.join(matches)
 
         record2 = Records()
-        record2.remark =text
+        record2.remark = text
         record2.remark2 = "json"
         record2.created_at = datetime.now()
         insert_records(record2)
@@ -272,13 +281,13 @@ def upload_pdf():
         app.logger.info(my_list)
 
         record = Records()
-        record.remark =extracted_json
+        record.remark = extracted_json
         record.created_at = datetime.now()
         insert_records(record)
 
         # 返回成功消息和文件路径
         return jsonify({'message': 'File downloaded successfully', 'sql': completion.choices[0].message.content})
 
-    #return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+    # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
