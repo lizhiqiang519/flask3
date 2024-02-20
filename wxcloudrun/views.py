@@ -5,8 +5,9 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions
+    insert_questions, insert_file
 from wxcloudrun.model import Counters
+from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
 from wxcloudrun.modelRecord import Records
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
@@ -155,6 +156,7 @@ def get_count():
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
 
 
+
 @app.route('/api/pdf', methods=['POST'])
 def upload_pdf():
     # 解析请求数据
@@ -219,9 +221,18 @@ def upload_pdf():
         # 如果是旧版本，可以用 retrieve_content
         file_content = client.files.content(file_id=file_object.id).text
 
-
         # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
-        app.logger.info("文件ID= %s,文件内容= %s", file_object.id, file_content)
+        app.logger.info("文件ID= %s,文件内容= %s", file_object.id)
+
+
+        file = File()
+        file.file_name = pdfName
+        file.download_url = downloadURL
+        file.created_at = datetime.now()
+        file.open = 1
+        file.file_size = file_object.bytes
+        file.api_file_id = file_object.id
+        insert_file(file)
 
         # 把它放进请求中
         messages1 = [

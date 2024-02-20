@@ -85,3 +85,14 @@ def insert_questions(questions):
         db.session.commit()
     except OperationalError as e:
         logger.info("insert_questions errorMsg= {} ".format(e))
+
+def insert_file(file):
+    """
+    插入一个questions实体
+    :param questions: Questions实体
+    """
+    try:
+        db.session.add(file)
+        db.session.commit()
+    except OperationalError as e:
+        logger.info("insert_file errorMsg= {} ".format(e))
