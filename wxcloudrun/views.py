@@ -250,7 +250,7 @@ def upload_pdf():
         app.logger.info("-----------------------completion-----------------------")
         app.logger.info(completion)
         record3 = Records()
-        record3.remark = jsonify(completion)
+        record3.remark = str(completion)
         record3.remark2 = "completion"
         record3.created_at = datetime.now()
         insert_records(record3)
