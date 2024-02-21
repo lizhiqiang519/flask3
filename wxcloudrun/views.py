@@ -821,10 +821,18 @@ def get_files_by_creator():
     app.logger.info("查询PDF入参=%s",openid)
 
     if not openid:
-        return jsonify({'error': 'Missing creator parameter'}), 400
+        return jsonify({'error': 'Missing openid'}), 400
+
     files = query_filebycreateby(openid)
-    files_data = [{'id': file.id, 'file_name': file.file_name, 'download_url': file.download_url,
-                   'file_size': file.file_size, 'open': file.open, 'api_file_id': file.api_file_id,
-                   'created_at': file.created_at, 'create_by': file.create_by, 'version': file.version}
-                  for file in files]
-    return jsonify(files_data)
+    files_data = [{
+        'id': file.id,
+        'file_name': file.file_name,
+        'download_url': file.download_url,
+        'file_size': file.file_size,
+        'open': file.open,
+        'created_at': file.created_at,
+        'create_by': file.create_by,
+        'version': file.version
+    } for file in files]
+
+    return jsonify(files_data), 200
