@@ -4,6 +4,7 @@ from sqlalchemy.exc import OperationalError
 
 from wxcloudrun import db
 from wxcloudrun.model import Counters
+from wxcloudrun.modelFile import File
 
 # 初始化日志
 logger = logging.getLogger('log')
@@ -96,3 +97,13 @@ def insert_file(file):
         db.session.commit()
     except OperationalError as e:
         logger.info("insert_file errorMsg= {} ".format(e))
+
+def query_filebycreateby(create_by):
+    """
+    查书
+    """
+    try:
+        return File.query.filter_by(File.create_by == create_by).all()
+    except OperationalError as e:
+        logger.info("query_filebycreateby errorMsg= {} ".format(e))
+        return None

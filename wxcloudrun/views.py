@@ -5,7 +5,7 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions, insert_file
+    insert_questions, insert_file, query_filebycreateby
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -812,3 +812,19 @@ def upload_pdf_vip():
     # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
+
+
+@app.route('/files/by_creator', methods=['POST'])
+def get_files_by_creator():
+    data = request.get_json()  # 获取请求体中的JSON数据
+    openid = data.get('openid')  # 从JSON数据中提取openid
+    app.logger.info("查询PDF入参=%s",openid)
+
+    if not openid:
+        return jsonify({'error': 'Missing creator parameter'}), 400
+    files = query_filebycreateby(openid)
+    files_data = [{'id': file.id, 'file_name': file.file_name, 'download_url': file.download_url,
+                   'file_size': file.file_size, 'open': file.open, 'api_file_id': file.api_file_id,
+                   'created_at': file.created_at, 'create_by': file.create_by, 'version': file.version}
+                  for file in files]
+    return jsonify(files_data)
