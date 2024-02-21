@@ -18,4 +18,5 @@ class Questions(db.Model):
     answer = db.Column(db.TEXT, default="")
     fenxi = db.Column(db.TEXT, default="")
     source = db.Column(db.TEXT, default="")
+    file_name = db.Column(db.TEXT, default="")
     created_at = db.Column('created_at', db.TIMESTAMP, nullable=False, default=datetime.now())
