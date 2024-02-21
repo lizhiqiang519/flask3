@@ -141,7 +141,7 @@ def get_count():
 
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion = client.chat.completions.create(
-            model="moonshot-v1-128k",
+            model="moonshot-v1-32k",
             messages=messages,
             temperature=0.3,
         )
