@@ -685,6 +685,7 @@ def upload_pdf_vip():
         file.create_by = openid
         insert_file(file)
 
+
         # 把它放进请求中
         messages1 = [
             {
