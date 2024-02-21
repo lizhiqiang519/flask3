@@ -103,7 +103,7 @@ def query_filebycreateby(create_by):
     查书
     """
     try:
-        return File.query.filter_by(File.create_by == create_by).all()
+        return File.query.filter(File.create_by == create_by).all()
     except OperationalError as e:
         logger.info("query_filebycreateby errorMsg= {} ".format(e))
         return None
