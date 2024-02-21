@@ -19,3 +19,4 @@ class File(db.Model):
     create_by = db.Column(db.TEXT, default="")
     #版本号
     version = db.Column(db.TEXT, default="")
+    yijuhua = db.Column(db.TEXT, default="")
