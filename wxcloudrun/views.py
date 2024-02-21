@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from math import floor
 from pathlib import Path
 
 from flask import render_template, request, jsonify
@@ -234,7 +235,7 @@ def upload_pdf():
 
 
         file = File()
-        file.file_name = pdfName
+        file.file_name = file_object.filename
         file.download_url = downloadURL
         file.created_at = datetime.now()
         file.open = 1
@@ -554,11 +555,11 @@ def upload_pdf_v1():
         extracted_json3 = '\n\n'.join(matches)
 
         file = File()
-        file.file_name = pdfName
+        file.file_name = file_object.filename
         file.download_url = downloadURL
         file.created_at = datetime.now()
         file.open = 1
-        file.file_size = file_object.bytes
+        file.file_size = floor(file_object.bytes / 1024 )
         file.api_file_id = file_object.id
         file.version = "v1"
         file.create_by = openid
@@ -680,7 +681,7 @@ def upload_pdf_vip():
 
 
         file = File()
-        file.file_name = pdfName
+        file.file_name = file_object.filename
         file.download_url = downloadURL
         file.created_at = datetime.now()
         file.open = 1
