@@ -16,5 +16,6 @@ class File(db.Model):
     open = db.Column(db.Integer, default="")
     api_file_id = db.Column(db.TEXT, default="")
     created_at = db.Column('created_at', db.TIMESTAMP, nullable=False, default=datetime.now())
+    create_by = db.Column(db.TEXT, default="")
     #版本号
     version = db.Column(db.TEXT, default="")
