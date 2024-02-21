@@ -22,11 +22,6 @@ from urllib.parse import urlparse, unquote
 # 配置日志记录
 logging.basicConfig(level=logging.INFO)
 
-client = OpenAI(
-    # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
-    api_key="sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV",
-    base_url="https://api.moonshot.cn/v1",
-)
 
 
 @app.route('/')
@@ -89,6 +84,12 @@ def get_count():
     current_path = os.getcwd()
     app.logger.info('12323111')
     app.logger.info(current_path)
+
+    client = OpenAI(
+        # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
+        api_key="sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV",
+        base_url="https://api.moonshot.cn/v1",
+    )
 
     # 从请求体获取下载链接
     url = "https://7064-pdf-8g1671jo5043b0ee-1306680641.tcb.qcloud.la/pdf/1707709258291.pdf?sign=085fac18606ee7a956561d760473410f&t=1708064004"
@@ -208,6 +209,13 @@ def upload_pdf():
         # 写入文件
         with open(file_path, 'wb') as f:
             f.write(response.content)
+
+        client = OpenAI(
+            # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
+            api_key="sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV",
+            base_url="https://api.moonshot.cn/v1",
+        )
+
 
         # 暗面AI
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
@@ -417,6 +425,12 @@ def upload_pdf_v1():
             f.write(response.content)
 
         # 暗面AI
+
+        client = OpenAI(
+            # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
+            api_key="sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV",
+            base_url="https://api.moonshot.cn/v1",
+        )
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
         app.logger.info("文件名称= %s,文件ID= %s",file_object.filename,file_object.id)
@@ -453,7 +467,7 @@ def upload_pdf_v1():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个老师，请针对" + filename + ".pdf" + "的内容，提供10道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节，不包含pdf文件名）"}
+             "content": "你是一个老师，请针对" + filename + ".pdf" + "的内容，提供20道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节，不包含pdf文件名）"}
         ]
 
         # messages2 = [
@@ -485,7 +499,7 @@ def upload_pdf_v1():
 
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion1 = client.chat.completions.create(
-            model="moonshot-v1-32k",
+            model="moonshot-v1-128k",
             messages=messages1,
             temperature=0.3,
         )
@@ -495,7 +509,7 @@ def upload_pdf_v1():
 
         record1 = Records()
         record1.remark = text1
-        record1.remark2 = "text"
+        record1.remark2 = "v1"
         record1.created_at = datetime.now()
         insert_records(record1)
 
