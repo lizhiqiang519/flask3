@@ -1,5 +1,6 @@
 import logging
 
+from sqlalchemy import desc
 from sqlalchemy.exc import OperationalError
 
 from wxcloudrun import db
@@ -103,7 +104,7 @@ def query_filebycreateby(create_by):
     查书
     """
     try:
-        return File.query.filter(File.create_by == create_by).all()
+        return File.query.filter(File.create_by == create_by).order_by(desc(File.created_at)).all()
     except OperationalError as e:
         logger.info("query_filebycreateby errorMsg= {} ".format(e))
         return None
