@@ -20,3 +20,4 @@ class File(db.Model):
     #版本号
     version = db.Column(db.TEXT, default="")
     yijuhua = db.Column(db.TEXT, default="")
+    zongfenjie= db.Column(db.TEXT, default="")

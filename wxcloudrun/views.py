@@ -563,7 +563,8 @@ def upload_pdf_v1():
         file.api_file_id = file_object.id
         file.version = "v1"
         file.create_by = openid
-        file.yijuhua = extracted_json3
+        file.zongfenjie = extracted_json3
+        file.yijuhua = extracted_json3.get("zongjie","")
         insert_file(file)
 
         #my_list = my_list1 + my_list2 + my_list3;
