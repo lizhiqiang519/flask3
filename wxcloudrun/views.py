@@ -548,10 +548,10 @@ def upload_pdf_v1():
         insert_records(record3)
 
         # # # 使用正则表达式匹配 ```json 和 ``` 之间的内容
-        # pattern = re.compile(r"```json(.*?)```", re.DOTALL)
-        # matches = pattern.findall(text3)
-        # # # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
-        # extracted_json3 = '\n\n'.join(matches)
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text3)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json3 = '\n\n'.join(matches)
 
         file = File()
         file.file_name = pdfName
@@ -562,9 +562,8 @@ def upload_pdf_v1():
         file.api_file_id = file_object.id
         file.version = "v1"
         file.create_by = openid
-        file.yijuhua = completion3.choices[0].message.content
+        file.yijuhua = extracted_json3
         insert_file(file)
-
 
         #my_list = my_list1 + my_list2 + my_list3;
         my_list = my_list1 + my_list2;
