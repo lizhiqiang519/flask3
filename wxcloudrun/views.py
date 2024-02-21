@@ -581,7 +581,7 @@ def upload_pdf_v1():
                 answer=question_dict.get('answer', ''),
                 fenxi=question_dict.get('fenxi', ''),
                 source=question_dict.get('source', ''),
-                file_name= filename,
+                file_name= pdfName,
                 api_file_id= file_object.id,
                 created_at = datetime.now()
             )
@@ -799,7 +799,7 @@ def upload_pdf_vip():
                 answer=question_dict.get('answer', ''),
                 fenxi=question_dict.get('fenxi', ''),
                 source=question_dict.get('source', ''),
-                file_name= filename,
+                file_name= pdfName,
                 api_file_id= file_object.id,
                 created_at = datetime.now()
             )
