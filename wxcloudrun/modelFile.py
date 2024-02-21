@@ -15,4 +15,5 @@ class File(db.Model):
     file_size = db.Column(db.Integer, default="")
     open = db.Column(db.Integer, default="")
     api_file_id = db.Column(db.TEXT, default="")
+    file_name = db.Column(db.TEXT, default="")
     created_at = db.Column('created_at', db.TIMESTAMP, nullable=False, default=datetime.now())

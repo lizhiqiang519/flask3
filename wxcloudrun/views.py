@@ -347,6 +347,8 @@ def upload_pdf():
                 answer=question_dict.get('answer', ''),
                 fenxi=question_dict.get('fenxi', ''),
                 source=question_dict.get('source', ''),
+                file_name= filename,
+                api_file_id= file_object.id,
                 created_at = datetime.now()
             )
             # 调用插入方法
