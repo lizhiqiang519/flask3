@@ -554,6 +554,9 @@ def upload_pdf_v1():
         # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
         extracted_json3 = '\n\n'.join(matches)
 
+        # 使用json.loads()将字符串解析为字典
+        extracted_json3333 = json.loads(extracted_json3)
+
         file = File()
         file.file_name = file_object.filename
         file.download_url = downloadURL
@@ -564,7 +567,7 @@ def upload_pdf_v1():
         file.version = "v1"
         file.create_by = openid
         file.zongfenjie = extracted_json3
-        file.yijuhua = extracted_json3.get("zongjie","")
+        file.yijuhua = extracted_json3333.get("zongjie", "")
         insert_file(file)
 
         #my_list = my_list1 + my_list2 + my_list3;
