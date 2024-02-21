@@ -850,6 +850,8 @@ def get_files_by_creator():
         'open': file.open,
         'created_at': file.created_at,
         'create_by': file.create_by,
+        'zongfenjie': file.zongfenjie,
+        'yijuhua': file.yijuhua,
         'version': file.version
     } for file in files]
 
