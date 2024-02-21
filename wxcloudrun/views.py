@@ -491,7 +491,7 @@ def upload_pdf_v1():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个老师，请认真阅读" + filename + ".pdf" + "的全部内容，最终返回的是json的字符串。先总结该文档的内容（字数控制在20字内，返回字段是zongjie），然后按该文档的章节或组成部分来详细总结（返回的字段是fendian），"}
+             "content": "你是一个老师，请认真阅读" + filename + ".pdf" + "的全部内容，最终返回的是json的字符串。先从专业地角度总结该文档的内容（字数控制在20字内，返回字段是zongjie），然后从专业地角度分点详细总结出各个完整的知识点（返回的字段是fendian）"}
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
