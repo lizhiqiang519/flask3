@@ -816,12 +816,19 @@ def upload_pdf_vip():
 
 @app.route('/files/by_creator', methods=['POST'])
 def get_files_by_creator():
-    data = request.get_json()  # 获取请求体中的JSON数据
-    openid = data.get('openid')  # 从JSON数据中提取openid
-    app.logger.info("查询PDF入参=%s",openid)
 
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    openid = data.get('openid')
     if not openid:
         return jsonify({'error': 'Missing openid'}), 400
+
+    app.logger.info("查询PDF入参=%s", openid)
 
     files = query_filebycreateby(openid)
     files_data = [{
