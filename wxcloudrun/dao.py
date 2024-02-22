@@ -6,6 +6,7 @@ from sqlalchemy.exc import OperationalError
 from wxcloudrun import db
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
+from wxcloudrun.modelQuestions import Questions
 
 # 初始化日志
 logger = logging.getLogger('log')
@@ -109,3 +110,12 @@ def query_filebycreateby(create_by):
         logger.info("query_filebycreateby errorMsg= {} ".format(e))
         return None
 
+def query_questionsbyapiid(api_file_id):
+    """
+    Questions
+    """
+    try:
+        return Questions.query.filter(Questions.api_file_id == api_file_id).all()
+    except OperationalError as e:
+        logger.info("query_Questions errorMsg= {} ".format(e))
+        return None
