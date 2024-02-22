@@ -6,7 +6,7 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions, insert_file, query_filebycreateby
+    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -870,3 +870,38 @@ def get_files_by_creator():
     } for file in files]
 
     return jsonify(files_data), 200
+
+
+@app.route('/questions/by_fileid', methods=['POST'])
+def get_files_by_creator():
+
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    api_file_id = data.get('api_file_id')
+    if not api_file_id:
+        return jsonify({'error': 'Missing openid'}), 400
+
+    app.logger.info("查询问题入参=%s", api_file_id)
+
+    questions = query_questionsbyapiid(api_file_id)
+    questions_data = [{
+        'id': question.id,
+        'question': question.question,
+        'option_a': question.option_a,
+        'option_b': question.option_b,
+        'option_c': question.option_c,
+        'option_d': question.option_d,
+        'answer': question.answer,
+        'fenxi': question.fenxi,
+        'file_name': question.file_name,
+        'created_at': question.created_at,
+        'source': question.source,
+        'api_file_id': question.api_file_id
+    } for question in questions]
+
+    return jsonify(questions_data), 200
