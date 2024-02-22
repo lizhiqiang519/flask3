@@ -485,7 +485,7 @@ def upload_pdf_v1():
 
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion1 = client.chat.completions.create(
-            model="moonshot-v1-32k",
+            model="moonshot-v1-128k",
             messages=messages1,
             temperature=0.3,
         )
@@ -511,7 +511,7 @@ def upload_pdf_v1():
 
         #然后调用 chat-completion, 获取 kimi 的回答
         completion2 = client.chat.completions.create(
-            model="moonshot-v1-32k",
+            model="moonshot-v1-128k",
             messages=messages2,
             temperature=0.3,
         )
@@ -536,7 +536,7 @@ def upload_pdf_v1():
 
         # 然后调用 chat-completion, 获取 kimi 的回答
         completion3 = client.chat.completions.create(
-            model="moonshot-v1-32k",
+            model="moonshot-v1-128k",
             messages=messages3,
             temperature=0.3,
         )
@@ -734,6 +734,19 @@ def upload_pdf_vip():
             },
             {"role": "user",
              "content": "你是一个老师，请针对" + filename + ".pdf" + "的后三分之一部分的内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串格式，list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节，不包含pdf文件名）"}
+        ]
+
+        messages4 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
+            {"role": "user",
+             "content": "你是一个老师，请认真阅读" + filename + ".pdf" + "的全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（知识点标题）、content（知识点内容））"}
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
