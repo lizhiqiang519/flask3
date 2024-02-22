@@ -873,7 +873,7 @@ def get_files_by_creator():
 
 
 @app.route('/questions/by_fileid', methods=['POST'])
-def get_files_by_creator():
+def get_questions_by_fileid():
 
     if not request.is_json:
         return jsonify({'error': 'Missing JSON in request'}), 400
