@@ -865,6 +865,7 @@ def get_files_by_creator():
         'create_by': file.create_by,
         'zongfenjie': file.zongfenjie,
         'yijuhua': file.yijuhua,
+        'api_file_id': file.api_file_id,
         'version': file.version
     } for file in files]
 
