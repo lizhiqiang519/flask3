@@ -1005,6 +1005,12 @@ def api_pdf_v1():
         token_data = calculate_token_response.json()
         total_tokens = token_data.get('data', {}).get('total_tokens')
 
+        app.logger.info("total_tokens %s", total_tokens)
+        app.logger.info("token_data %s", token_data)
+        app.logger.info(token_data)
+
+        app.logger.info(total_tokens)
+
         # 返回计算结果
         return jsonify({'total_tokens': total_tokens}), 200
 
