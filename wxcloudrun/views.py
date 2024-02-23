@@ -1166,6 +1166,7 @@ def calculate_token():
         return jsonify({'error': 'Failed to retrieve file content'}), file_content_response.status_code
 
     app.logger.info("计算token结果file_content_response %s", file_content_response)
+    app.logger.info(file_content_response)
 
     # 使用文件内容计算Token
     calculate_token_response = requests.post(
@@ -1175,6 +1176,7 @@ def calculate_token():
     )
 
     app.logger.info("计算token结果 %s",calculate_token_response)
+    app.logger.info(calculate_token_response)
 
     # 检查计算Token响应
     if calculate_token_response.status_code != 200:
