@@ -17,13 +17,16 @@ import logging
 import requests
 from openai import OpenAI
 import re
+from werkzeug.utils import secure_filename
 
 from urllib.parse import urlparse, unquote
 
 # 配置日志记录
 logging.basicConfig(level=logging.INFO)
 
-
+# 设置您的Moonshot AI API密钥
+MOONSHOT_API_KEY = 'sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX'
+MOONSHOT_API_URL = 'https://api.moonshot.cn/v1'
 
 @app.route('/')
 def index():
@@ -1146,4 +1149,36 @@ def api_pdf_v1():
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
 
 
+@app.route('/calculate-token', methods=['POST'])
+def calculate_token():
 
+    # 上传文件到Moonshot AI
+    headers = {
+        'Authorization': f'Bearer {MOONSHOT_API_KEY}',
+        'Content-Type': 'multipart/form-data'
+    }
+
+    file_id = "cnc1cq1kqq4s11surg7g"
+
+    # 获取文件内容
+    file_content_response = requests.get(f'{MOONSHOT_API_URL}/files/{file_id}/content', headers=headers)
+    if file_content_response.status_code != 200:
+        return jsonify({'error': 'Failed to retrieve file content'}), file_content_response.status_code
+
+    # 使用文件内容计算Token
+    calculate_token_response = requests.post(
+        f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
+        headers=headers,
+        json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content_response.json()}]}
+    )
+
+    # 检查计算Token响应
+    if calculate_token_response.status_code != 200:
+        return jsonify({'error': 'Failed to calculate tokens'}), calculate_token_response.status_code
+
+    # 解析计算Token响应
+    token_data = calculate_token_response.json()
+    total_tokens = token_data.get('data', {}).get('total_tokens')
+
+    # 返回计算结果
+    return jsonify({'total_tokens': total_tokens}), 200
