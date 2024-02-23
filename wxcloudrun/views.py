@@ -425,8 +425,9 @@ def upload_pdf_v1():
 
         client = OpenAI(
             # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
-            api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",
-            base_url="https://api.moonshot.cn/v1",
+            #api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",#3335
+            api_key = "sk - nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",  # 8061
+                  base_url="https://api.moonshot.cn/v1",
         )
         # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
         file_object = client.files.create(file=Path(file_path), purpose="file-extract")
