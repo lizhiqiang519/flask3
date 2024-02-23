@@ -991,7 +991,7 @@ def api_pdf_v1():
         calculate_token_response = requests.post(
             f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
             headers=headers,
-            json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content.join()}]}
+            json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content}]}
         )
 
         app.logger.info("计算token结果 %s", calculate_token_response)
