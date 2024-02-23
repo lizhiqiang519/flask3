@@ -1152,27 +1152,61 @@ def api_pdf_v1():
 @app.route('/calculate-token', methods=['POST'])
 def calculate_token():
 
+    downloadURL = "https://7064-pdf-8g1671jo5043b0ee-1306680641.tcb.qcloud.la/pdf/1708660325318-黑衣人.pdf"
+
+    response = requests.get(downloadURL)
+    response.raise_for_status()  # 确保请求成功
+
+    # 解析 URL 并提取文件名
+    parsed_url = urlparse(downloadURL)
+    pdf_filename_with_extension = os.path.basename(parsed_url.path)
+
+    # 对 URL 进行解码，以获取正确的文件名（包括中文等字符）
+    decoded_filename = unquote(pdf_filename_with_extension)
+
+    # 去除文件扩展名，假设扩展名为 .pdf
+    filename = decoded_filename.rsplit('.', 1)[0]
+
+    # 获取当前运行的路径，保存文件
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, filename)
+
+    # 写入文件
+    with open(file_path, 'wb') as f:
+        f.write(response.content)
+
+    # 暗面AI
+
+    client = OpenAI(
+        # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
+        # 3335
+        api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",
+        # api_key = "sk-gpbNCX3bxCQX8fUOQu1KUXj97SVKQQoJuxJSym7eXMMnqWHe",  # 8061
+        # api_key = "sk-fvcU5LTOezeeBcbbFSiXiwWTudu6v3p7uhAblYucKbGg0a1W",  #7077
+        base_url="https://api.moonshot.cn/v1",
+    )
+    # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
+    file_object = client.files.create(file=Path(file_path), purpose="file-extract")
+    app.logger.info("calculate-token文件名称= %s,文件ID= %s", file_object.filename, file_object.id)
+    app.logger.info("calculate-token文件路径= %s,文件大小= %s kb", file_path, file_object.bytes / 1024)
+
+    # 获取结果
+    # file_content = client.files.retrieve_content(file_id=file_object.id)
+    # 注意，之前 retrieve_content api 在最新版本标记了 warning, 可以用下面这行代替
+    # 如果是旧版本，可以用 retrieve_content
+    file_content = client.files.content(file_id=file_object.id).text
+
     # 上传文件到Moonshot AI
     headers = {
         'Authorization': f'Bearer {MOONSHOT_API_KEY}',
         'Content-Type': 'multipart/form-data'
     }
 
-    file_id = "cnc33r9kqq4gkiluduj0"
-
-    # 获取文件内容
-    file_content_response = requests.get(f'{MOONSHOT_API_URL}/files/{file_id}/content', headers=headers)
-    if file_content_response.status_code != 200:
-        return jsonify({'error': 'Failed to retrieve file content'}), file_content_response.status_code
-
-    app.logger.info("计算token结果file_content_response %s", file_content_response)
-    app.logger.info(file_content_response)
-
     # 使用文件内容计算Token
     calculate_token_response = requests.post(
         f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
         headers=headers,
-        json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content_response.json()}]}
+        json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content.json()}]}
     )
 
     app.logger.info("计算token结果 %s",calculate_token_response)
