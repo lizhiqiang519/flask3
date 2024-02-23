@@ -565,7 +565,7 @@ def upload_pdf_v1():
         extracted_json3333 = json.loads(extracted_json3)
 
         file = File()
-        file.file_name = file_object.filename
+        file.file_name = pdfName
         file.download_url = downloadURL
         file.created_at = datetime.now()
         file.open = 1
