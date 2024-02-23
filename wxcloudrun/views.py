@@ -1034,8 +1034,21 @@ def get_filedetail_by_fileid():
         return jsonify({'error': 'Missing openid'}), 400
 
     app.logger.info("查询问题入参=%s", fileid)
-
     file = query_filebyfileid(fileid)
+    if file is None:
+        return jsonify({'error': 'File not found'}), 404
+    file_detail = {
+        'id': file.id,
+        'file_name': file.file_name,
+        'download_url': file.download_url,
+        'file_size': file.file_size,
+        'open': file.open,
+        'api_file_id': file.api_file_id,
+        'created_at': file.created_at,
+        'create_by': file.create_by,
+        'version': file.version,
+        'yijuhua': file.yijuhua,
+        'zongfenjie': file.zongfenjie
 
-    return file, 200
-
+    }
+    return jsonify(file_detail), 200
