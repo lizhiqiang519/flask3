@@ -6,7 +6,7 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid
+    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -1018,4 +1018,24 @@ def api_pdf_v1():
         # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
         return jsonify({'error': 'Failed to get total_tokens', 'details': str(e)}), 500
+
+@app.route('/file/by_fileid', methods=['POST'])
+def get_filedetail_by_fileid():
+
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    fileid = data.get('fileid')
+    if not fileid:
+        return jsonify({'error': 'Missing openid'}), 400
+
+    app.logger.info("查询问题入参=%s", fileid)
+
+    file = query_filebyfileid(fileid)
+
+    return jsonify(file), 200
 

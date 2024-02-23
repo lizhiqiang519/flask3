@@ -119,3 +119,14 @@ def query_questionsbyapiid(api_file_id):
     except OperationalError as e:
         logger.info("query_Questions errorMsg= {} ".format(e))
         return None
+
+
+def query_filebyfileid(id):
+    """
+    查书
+    """
+    try:
+        return File.query.filter(File.id == id).first()
+    except OperationalError as e:
+        logger.info("query_filebycreateby errorMsg= {} ".format(e))
+        return None
