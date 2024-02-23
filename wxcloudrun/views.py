@@ -514,7 +514,7 @@ def upload_pdf_v1():
 
         #然后调用 chat-completion, 获取 kimi 的回答
         completion2 = client.chat.completions.create(
-            model="moonshot-v1-32",
+            model="moonshot-v1-32k",
             messages=messages2,
             temperature=0.3,
         )
