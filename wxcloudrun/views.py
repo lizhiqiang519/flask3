@@ -444,6 +444,7 @@ def upload_pdf_v1():
 
         # 保存：fileID、原来文件名、下载链接、pdf封面URL、大小
         app.logger.info("文件ID= %s", file_object.id)
+        app.logger.info("文件字数= %s 个", len(file_content))
 
         # 把它放进请求中
         messages1 = [
