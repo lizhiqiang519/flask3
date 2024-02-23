@@ -1158,7 +1158,7 @@ def calculate_token():
         'Content-Type': 'multipart/form-data'
     }
 
-    file_id = "cnbejl03r074seqv36r0"
+    file_id = "cnc33r9kqq4gkiluduj0"
 
     # 获取文件内容
     file_content_response = requests.get(f'{MOONSHOT_API_URL}/files/{file_id}/content', headers=headers)
