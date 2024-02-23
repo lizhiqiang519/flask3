@@ -1169,7 +1169,7 @@ def calculate_token():
     calculate_token_response = requests.post(
         f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
         headers=headers,
-        json={'model': 'moonshot-v1-32k', 'messages': [{'role': 'system', 'content': file_content_response.json()}]}
+        json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content_response.json()}]}
     )
 
     app.logger.info("计算token结果 %s",calculate_token_response)
