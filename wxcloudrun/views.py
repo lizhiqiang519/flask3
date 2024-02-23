@@ -1037,5 +1037,5 @@ def get_filedetail_by_fileid():
 
     file = query_filebyfileid(fileid)
 
-    return jsonify(file), 200
+    return file, 200
 
