@@ -1172,6 +1172,8 @@ def calculate_token():
         json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content_response.json()}]}
     )
 
+    app.logger.info("计算token结果 %s",calculate_token_response)
+
     # 检查计算Token响应
     if calculate_token_response.status_code != 200:
         return jsonify({'error': 'Failed to calculate tokens'}), calculate_token_response.status_code
