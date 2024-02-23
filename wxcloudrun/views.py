@@ -1165,6 +1165,8 @@ def calculate_token():
     if file_content_response.status_code != 200:
         return jsonify({'error': 'Failed to retrieve file content'}), file_content_response.status_code
 
+    app.logger.info("计算token结果file_content_response %s", file_content_response)
+
     # 使用文件内容计算Token
     calculate_token_response = requests.post(
         f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
