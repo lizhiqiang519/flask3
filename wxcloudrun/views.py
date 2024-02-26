@@ -1009,11 +1009,12 @@ def api_pdf_v1():
         app.logger.info("total_tokens %s", total_tokens)
         app.logger.info("token_data %s", token_data)
         app.logger.info(token_data)
+        app.logger.info("文件字数 %s", token_data.len())
 
         app.logger.info(total_tokens)
 
         # 返回计算结果
-        return jsonify({'total_tokens': total_tokens}), 200
+        return jsonify({'total_tokens': total_tokens,'file_words': token_data.len()}), 200
 
         # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
