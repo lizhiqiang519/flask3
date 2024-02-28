@@ -11,7 +11,6 @@ class Wendati(db.Model):
     # 设定结构体对应表格的字段
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.TEXT, default="")
-    answer = db.Column(db.TEXT, default="")
     fenxi = db.Column(db.TEXT, default="")
     source = db.Column(db.TEXT, default="")
     file_name = db.Column(db.TEXT, default="")

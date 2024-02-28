@@ -1219,7 +1219,7 @@ def upload_pdf_v1():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个专业老师，请针对" + filename + ".pdf" + "的全部内容，提供5道文档中重要知识点相关的问答题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+             "content": "你是一个专业老师，请针对" + filename + ".pdf" + "的全部内容，提供6道文档中重要知识点相关的问答题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
@@ -1250,7 +1250,6 @@ def upload_pdf_v1():
             # 创建 Records 实例，确保字段匹配
             question_wenda = Wendati(
                 question=question_dict.get('question', ''),
-                answer=question_dict.get('answer', ''),
                 fenxi=question_dict.get('fenxi', ''),
                 source=question_dict.get('source', ''),
                 file_name= pdfName,
