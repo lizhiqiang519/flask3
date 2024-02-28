@@ -1066,7 +1066,7 @@ def upload_pdf_v1():
     openid = data.get('openid')
 
     # 打印信息到控制台
-    app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s,选择的接口=%s", downloadURL, pdfName,openid)
+    app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s", downloadURL, pdfName,openid)
 
     # 从请求体获取下载链接
     if not downloadURL:
