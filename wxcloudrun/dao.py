@@ -130,3 +130,15 @@ def query_filebyfileid(id):
     except OperationalError as e:
         logger.info("query_filebycreateby errorMsg= {} ".format(e))
         return None
+
+
+def insert_wendatis(wendati):
+    """
+    插入一个questions实体
+    :param questions: Questions实体
+    """
+    try:
+        db.session.add(wendati)
+        db.session.commit()
+    except OperationalError as e:
+        logger.info("insert_wendati errorMsg= {} ".format(e))
