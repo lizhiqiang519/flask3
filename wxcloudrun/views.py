@@ -11,6 +11,7 @@ from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
 from wxcloudrun.modelRecord import Records
+from wxcloudrun.modelWendatis import Wendati
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import os
 import logging
