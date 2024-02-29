@@ -5743,8 +5743,8 @@ def upload_pdf_s6():
 
 
 #文件与用户id绑定
-@app.route('/api/bindPdf', methods=['POST'])
-def user_bindPdf():
+@app.route('/user/bind/pdf', methods=['POST'])
+def user_bind_pdf():
 
     # 解析请求数据
     data = request.get_json()
