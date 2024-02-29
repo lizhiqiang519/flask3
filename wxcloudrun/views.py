@@ -5812,6 +5812,7 @@ def get_wendatis_by_fileid():
     wendatissss = query_wendatisbyapiid(api_file_id)
     wendati_data = [{
         'id': wendati.id,
+        'question': wendati.question,
         'fenxi': wendati.fenxi,
         'file_name': wendati.file_name,
         'created_at': wendati.created_at,
