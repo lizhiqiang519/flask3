@@ -1830,6 +1830,8 @@ def upload_pdf_v3():
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie.get("zongjie", "")
         insert_file(file)
+        app.logger.info("添加文件 文件名称= %s", file_object.filename)
+
 
         #------------------------------------------问答题-----------------------------------------------------------
         messagesWenda1 = [
