@@ -5744,7 +5744,7 @@ def upload_pdf_s6():
 
 #文件与用户id绑定
 @app.route('/api/bindPdf', methods=['POST'])
-def upload_pdf_v2():
+def upload_pdf_bindPdf():
     # 解析请求数据
     data = request.get_json()
     file_name = data.get('file_name')
