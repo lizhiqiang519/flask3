@@ -7,6 +7,7 @@ from wxcloudrun import db
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
+from wxcloudrun.modelWendatis import Wendati
 
 # 初始化日志
 logger = logging.getLogger('log')
@@ -158,3 +159,14 @@ def delete_file22(api_file_id, create_by):
     except Exception as e:
         db.session.rollback()  # 错误时回滚
         return False, f"删除文件时发生错误: {str(e)}"
+
+
+def query_wendatisbyapiid(api_file_id):
+    """
+    Wendatis
+    """
+    try:
+        return Wendati.query.filter(Wendati.api_file_id == api_file_id).all()
+    except OperationalError as e:
+        logger.info("query_Wendati errorMsg= {} ".format(e))
+        return None

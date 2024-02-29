@@ -6,7 +6,8 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid, delete_file22
+    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid, delete_file22, \
+    query_wendatisbyapiid
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -880,7 +881,7 @@ def get_files_by_creator():
     return jsonify(files_data), 200
 
 
-
+#选择题查询
 @app.route('/questions/by_fileid', methods=['POST'])
 def get_questions_by_fileid():
 
@@ -5790,3 +5791,32 @@ def user_unbind_pdf():
         return jsonify({'message': message})
     else:
         return jsonify({'error': message}), 400 if "未找到文件或权限不足" in message else 500
+
+
+@app.route('/wendati/by_fileid', methods=['POST'])
+def get_wendatis_by_fileid():
+
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    api_file_id = data.get('api_file_id')
+    if not api_file_id:
+        return jsonify({'error': 'Missing openid'}), 400
+
+    app.logger.info("查询问答题入参=%s", api_file_id)
+
+    wendatissss = query_wendatisbyapiid(api_file_id)
+    wendati_data = [{
+        'id': wendati.id,
+        'fenxi': wendati.fenxi,
+        'file_name': wendati.file_name,
+        'created_at': wendati.created_at,
+        'source': wendati.source,
+        'api_file_id': wendati.api_file_id
+    } for wendati in wendatissss]
+
+    return jsonify(wendati_data), 200
