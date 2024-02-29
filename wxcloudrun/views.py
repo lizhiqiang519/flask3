@@ -1822,12 +1822,12 @@ def upload_pdf_v3():
         file.file_name = pdfName
         file.download_url = downloadURL
         file.created_at = datetime.now()
-        file.open = 1
+        file.open = 0
         file.file_size = floor(file_object.bytes / 1024 )
         file.api_file_id = file_object.id
         file.version = "v3"
         file.create_by = openid
-        file.zongfenjie = extracted_json3
+        file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie.get("zongjie", "")
         insert_file(file)
 
@@ -1956,4 +1956,6 @@ def upload_pdf_v3():
     # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
     except requests.RequestException as e:
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
+
+
 
