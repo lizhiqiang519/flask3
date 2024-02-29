@@ -5745,6 +5745,7 @@ def upload_pdf_s6():
 #文件与用户id绑定
 @app.route('/api/bindPdf', methods=['POST'])
 def upload_pdf_bindPdf():
+
     # 解析请求数据
     data = request.get_json()
     file_name = data.get('file_name')
@@ -5755,6 +5756,8 @@ def upload_pdf_bindPdf():
     version = data.get('version')
     yijuhua = data.get('yijuhua')
     zongfenjie = data.get('zongfenjie')
+
+    app.logger.info("文件与用户id绑定 download_url= %s,PDF名称= %s", download_url, file_name)
 
     file = File()
     file.file_name = file_name
