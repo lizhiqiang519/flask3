@@ -142,3 +142,19 @@ def insert_wendatis(wendati):
         db.session.commit()
     except OperationalError as e:
         logger.info("insert_wendati errorMsg= {} ".format(e))
+
+
+#删除文件
+def delete_file22(api_file_id, create_by):
+    try:
+        # 查找匹配的文件记录
+        file = File.query.filter_by(api_file_id=api_file_id, create_by=create_by).first()
+        if file:
+            db.session.delete(file)  # 删除该记录
+            db.session.commit()  # 提交更改
+            return True, "文件删除成功"
+        else:
+            return False, "未找到文件或权限不足"
+    except Exception as e:
+        db.session.rollback()  # 错误时回滚
+        return False, f"删除文件时发生错误: {str(e)}"

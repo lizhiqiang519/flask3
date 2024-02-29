@@ -6,7 +6,7 @@ from pathlib import Path
 from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
-    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid
+    insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid, delete_file22
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -5773,3 +5773,20 @@ def user_bind_pdf():
     insert_file(file)
 
     return jsonify({'message': '绑定成功'})
+
+
+@app.route('/user/unbind/pdf', methods=['POST'])
+def user_unbind_pdf():
+
+    # 解析请求数据
+    data = request.get_json()
+    api_file_id = data.get('api_file_id')
+    create_by = data.get('create_by')
+
+    app.logger.info("文件与用户id取消绑定 api_file_id= %s,create_by= %s", api_file_id, create_by)
+
+    success, message = delete_file22(api_file_id, create_by)  # 使用新的 delete_file 方法
+    if success:
+        return jsonify({'message': message})
+    else:
+        return jsonify({'error': message}), 400 if "未找到文件或权限不足" in message else 500
