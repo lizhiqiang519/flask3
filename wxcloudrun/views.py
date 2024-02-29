@@ -1654,10 +1654,6 @@ def upload_pdf_v3():
         first_part = file_content[:part_length]
         second_part = file_content[part_length:2 * part_length]
         third_part = file_content[2 * part_length:]
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
 
         # 计算字符串的长度，并整除2得到中间位置
         mid_point = len(file_content2) // 2
@@ -2029,12 +2025,6 @@ def upload_pdf_v4():
         second_part = file_content[part_length:2 * part_length]
         third_part = file_content[2 * part_length:3 * part_length]
         fourth_part = file_content[3 * part_length:]
-
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
-        print("第四部分:", fourth_part)
 
         # 计算字符串的长度，并整除2得到中间位置
         mid_point = len(file_content2) // 2
@@ -2973,10 +2963,6 @@ def upload_pdf_s3():
         first_part = file_content[:part_length]
         second_part = file_content[part_length:2 * part_length]
         third_part = file_content[2 * part_length:]
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
 
         # 计算字符串的长度，并整除2得到中间位置
         mid_point = len(file_content2) // 2
@@ -3350,12 +3336,6 @@ def upload_pdf_s4():
         second_part = file_content[part_length:2 * part_length]
         third_part = file_content[2 * part_length:3 * part_length]
         fourth_part = file_content[3 * part_length:]
-
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
-        print("第四部分:", fourth_part)
 
         # 计算字符串的长度，并整除2得到中间位置
         mid_point = len(file_content2) // 2
@@ -3772,12 +3752,6 @@ def upload_pdf_s5():
         fourth_part = file_content[int(3 * part_length):int(4 * part_length)]
         fifth_part = file_content[int(4 * part_length):]
 
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
-        print("第四部分:", fourth_part)
-        print("第五部分:", fifth_part)
 
         #问答题切割
         # 计算每一部分的大致长度，使用整除来确保得到整数
@@ -4277,14 +4251,6 @@ def upload_pdf_s6():
         fourth_part = file_content[int(3 * part_length):int(4 * part_length)]
         fifth_part = file_content[int(4 * part_length):int(5 * part_length)]
         sixth_part = file_content[int(5 * part_length):]
-
-        # 打印每一部分，验证结果
-        print("第一部分:", first_part)
-        print("第二部分:", second_part)
-        print("第三部分:", third_part)
-        print("第四部分:", fourth_part)
-        print("第五部分:", fifth_part)
-        print("第六部分:", sixth_part)
 
         #问答题切割
         # 计算每一部分的大致长度，使用整除来确保得到整数
