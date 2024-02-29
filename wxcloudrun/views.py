@@ -5742,4 +5742,31 @@ def upload_pdf_s6():
         return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
 
 
+#文件与用户id绑定
+@app.route('/api/bindPdf', methods=['POST'])
+def upload_pdf_v2():
+    # 解析请求数据
+    data = request.get_json()
+    file_name = data.get('file_name')
+    download_url = data.get('download_url')
+    file_size = data.get('file_size')
+    create_by = data.get('create_by')
+    api_file_id = data.get('api_file_id')
+    version = data.get('version')
+    yijuhua = data.get('yijuhua')
+    zongfenjie = data.get('zongfenjie')
 
+    file = File()
+    file.file_name = file_name
+    file.download_url = download_url
+    file.created_at = datetime.now()
+    file.open = 2
+    file.file_size = file_size
+    file.api_file_id = api_file_id
+    file.version = version
+    file.create_by = create_by
+    file.zongfenjie = zongfenjie
+    file.yijuhua = yijuhua
+    insert_file(file)
+
+    return jsonify({'message': '绑定成功'})
