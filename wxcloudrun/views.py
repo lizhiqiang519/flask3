@@ -1816,7 +1816,7 @@ def upload_pdf_v3():
         extracted_jsonZongJie = '\n\n'.join(matches)
 
         # 使用json.loads()将字符串解析为字典
-        extracted_jsonZongJie = json.loads(extracted_jsonZongJie)
+        extracted_jsonZongJie22 = json.loads(extracted_jsonZongJie)
 
         file = File()
         file.file_name = pdfName
@@ -1828,7 +1828,7 @@ def upload_pdf_v3():
         file.version = "v3"
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
-        file.yijuhua = extracted_jsonZongJie.get("zongjie", "")
+        file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
