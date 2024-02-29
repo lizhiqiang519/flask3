@@ -3761,10 +3761,6 @@ def upload_pdf_s5():
         second_wenda = file_content2[wenda_length:2 * wenda_length]
         third_wenda = file_content2[2 * wenda_length:]
 
-        # 打印每一部分，验证结果
-        print("first_wenda第一部分:", first_wenda)
-        print("second_wenda第二部分:", second_wenda)
-        print("third_wenda第三部分:", third_wenda)
 
         # 把它放进请求中
         messages1 = [
@@ -4260,10 +4256,6 @@ def upload_pdf_s6():
         second_wenda = file_content2[wenda_length:2 * wenda_length]
         third_wenda = file_content2[2 * wenda_length:]
 
-        # 打印每一部分，验证结果
-        print("first_wenda第一部分:", first_wenda)
-        print("second_wenda第二部分:", second_wenda)
-        print("third_wenda第三部分:", third_wenda)
 
         # 把它放进请求中
         messages1 = [
