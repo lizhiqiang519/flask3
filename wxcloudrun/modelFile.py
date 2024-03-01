@@ -21,3 +21,5 @@ class File(db.Model):
     version = db.Column(db.TEXT, default="")
     yijuhua = db.Column(db.TEXT, default="")
     zongfenjie= db.Column(db.TEXT, default="")
+    #题目数量
+    timus = db.Column(db.Integer, default="")

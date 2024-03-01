@@ -875,6 +875,7 @@ def get_files_by_creator():
         'zongfenjie': file.zongfenjie,
         'yijuhua': file.yijuhua,
         'api_file_id': file.api_file_id,
+        'timus': file.timus,
         'version': file.version
     } for file in files]
 
@@ -1051,6 +1052,7 @@ def get_filedetail_by_fileid():
         'create_by': file.create_by,
         'version': file.version,
         'yijuhua': file.yijuhua,
+        'timus': file.timus,
         'zongfenjie': file.zongfenjie
 
     }
@@ -1207,6 +1209,7 @@ def upload_pdf_v1():
         file.create_by = openid
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
+        file.timus = process_input_string("v1")
         insert_file(file)
 
         #------------------------------------------问答题-----------------------------------------------------------
@@ -1495,6 +1498,7 @@ def upload_pdf_v2():
         file.create_by = openid
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
+        file.timus = process_input_string("v2")
         insert_file(file)
 
         #------------------------------------------问答题-----------------------------------------------------------
@@ -1825,6 +1829,7 @@ def upload_pdf_v3():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v3")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -2235,6 +2240,7 @@ def upload_pdf_v4():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v4")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -2692,6 +2698,7 @@ def upload_pdf_v5():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v5")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -3229,6 +3236,7 @@ def upload_pdf_v6():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v6")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -3551,6 +3559,7 @@ def upload_pdf_s1():
         file.create_by = openid
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
+        file.timus = process_input_string("s1")
         insert_file(file)
 
         #------------------------------------------问答题-----------------------------------------------------------
@@ -3838,6 +3847,7 @@ def upload_pdf_s2():
         file.create_by = openid
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
+        file.timus = process_input_string("v2")
         insert_file(file)
 
         #------------------------------------------问答题-----------------------------------------------------------
@@ -4168,6 +4178,7 @@ def upload_pdf_s3():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v3")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -4578,6 +4589,7 @@ def upload_pdf_s4():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v4")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -5035,6 +5047,7 @@ def upload_pdf_s5():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v5")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -5572,6 +5585,7 @@ def upload_pdf_s6():
         file.create_by = openid
         file.zongfenjie = extracted_jsonZongJie
         file.yijuhua = extracted_jsonZongJie22.get("zongjie", "")
+        file.timus = process_input_string("v6")
         insert_file(file)
         app.logger.info("添加文件 文件名称= %s", file_object.filename)
 
@@ -5771,6 +5785,7 @@ def user_bind_pdf():
     file.create_by = create_by
     file.zongfenjie = zongfenjie
     file.yijuhua = yijuhua
+    file.timus = process_input_string(version)
     insert_file(file)
 
     return jsonify({'message': '绑定成功'})
@@ -5821,3 +5836,24 @@ def get_wendatis_by_fileid():
     } for wendati in wendatissss]
 
     return jsonify(wendati_data), 200
+
+
+def process_input_string(input_string):
+
+    mapping = {
+        '1': 11,
+        '2': 16,
+        '3': 27,
+        '4': 32,
+        '5': 43,
+        '6': 48,
+    }
+
+    # 遍历字典，检查输入字符串中是否包含特定字符
+    for char, value in mapping.items():
+        if char in input_string:
+            return value
+
+    # 如果输入字符串不包含任何指定字符，则返回错误信息或特定值
+    return 0
+
