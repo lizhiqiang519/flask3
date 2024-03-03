@@ -5888,6 +5888,27 @@ def get_filedetail_by_api_fileid():
         'yijuhua': file.yijuhua,
         'timus': file.timus,
         'zongfenjie': file.zongfenjie
-
     }
     return jsonify(file_detail), 200
+
+
+@app.route('/user/chushihua/pdf', methods=['POST'])
+def user_chushihua_pdf():
+
+    # 解析请求数据
+    data = request.get_json()
+    openid = data.get('openid')
+    app.logger.info("初始化 = %s", openid)
+    file1 = query_fileByApiFileid("cni6e1cudu62fberilog")
+    file1.create_by= openid
+    insert_file(file1)
+
+    file2 = query_fileByApiFileid("cni5p72lnl9cetc8kqr0")
+    file2.create_by= openid
+    insert_file(file2)
+
+    file3 = query_fileByApiFileid("cni5a02lnl91mfbctqg0")
+    file3.create_by= openid
+    insert_file(file3)
+
+    return jsonify({'message': '初始化成功'})
