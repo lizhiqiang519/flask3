@@ -5901,16 +5901,19 @@ def user_chushihua_pdf():
     app.logger.info("初始化 = %s", openid)
     file1 = query_fileByApiFileid("cni6e1cudu62fberilog")
     file1.create_by= openid
+    file1.id = None
     insert_file(file1)
     app.logger.info("初始化file1 = %s", file1.id)
 
     file2 = query_fileByApiFileid("cni5p72lnl9cetc8kqr0")
     file2.create_by= openid
+    file2.id = None
     insert_file(file2)
     app.logger.info("初始化file2 = %s", file2.id)
 
     file3 = query_fileByApiFileid("cni5a02lnl91mfbctqg0")
     file3.create_by= openid
+    file3.id = None
     insert_file(file3)
     app.logger.info("初始化file3 = %s", file3.id)
 
