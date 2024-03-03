@@ -7,7 +7,7 @@ from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
     insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid, delete_file22, \
-    query_wendatisbyapiid
+    query_wendatisbyapiid, query_fileByApiFileid
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -5857,3 +5857,37 @@ def process_input_string(input_string):
     # 如果输入字符串不包含任何指定字符，则返回错误信息或特定值
     return 0
 
+@app.route('/file/by_api_fileid', methods=['POST'])
+def get_filedetail_by_api_fileid():
+
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    fileid = data.get('fileid')
+    if not fileid:
+        return jsonify({'error': 'Missing openid'}), 400
+
+    app.logger.info("查询问题入参=%s", fileid)
+    file = query_fileByApiFileid(fileid)
+    if file is None:
+        return jsonify({'error': 'File not found'}), 404
+    file_detail = {
+        'id': file.id,
+        'file_name': file.file_name,
+        'download_url': file.download_url,
+        'file_size': file.file_size,
+        'open': file.open,
+        'api_file_id': file.api_file_id,
+        'created_at': file.created_at,
+        'create_by': file.create_by,
+        'version': file.version,
+        'yijuhua': file.yijuhua,
+        'timus': file.timus,
+        'zongfenjie': file.zongfenjie
+
+    }
+    return jsonify(file_detail), 200

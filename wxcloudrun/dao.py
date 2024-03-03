@@ -132,6 +132,16 @@ def query_filebyfileid(id):
         logger.info("query_filebycreateby errorMsg= {} ".format(e))
         return None
 
+def query_fileByApiFileid(id):
+    """
+    查书
+    """
+    try:
+        return File.query.filter(File.api_file_id == id).first()
+    except OperationalError as e:
+        logger.info("query_fapi_file_id errorMsg= {} ".format(e))
+        return None
+
 
 def insert_wendatis(wendati):
     """
