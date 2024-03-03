@@ -5900,21 +5900,48 @@ def user_chushihua_pdf():
     openid = data.get('openid')
     app.logger.info("初始化 = %s", openid)
     file1 = query_fileByApiFileid("cni6e1cudu62fberilog")
-    file1.create_by= openid
-    file1.id = None
-    insert_file(file1)
-    app.logger.info("初始化file1 = %s", file1)
+    file11 = File();
+    file11.create_by= openid
+    file11.file_name= file1.file_name
+    file11.download_url=file1.download_url
+    file11.file_size=file1.file_size
+    file11.open = 1
+    file11.api_file_id =file1.api_file_id
+    file11.version = file1.version
+    file11.yijuhua =file1.yijuhua
+    file11.zongfenjie =file1.zongfenjie
+    file11.timus=file1.timus
+    insert_file(file11)
+    app.logger.info("初始化file1 = %s", file11)
 
     file2 = query_fileByApiFileid("cni5p72lnl9cetc8kqr0")
-    file2.create_by= openid
-    file2.id = None
-    insert_file(file2)
-    app.logger.info("初始化file2 = %s", file2)
+    file22 = File();
+    file22.create_by= openid
+    file22.file_name= file2.file_name
+    file22.download_url=file2.download_url
+    file22.file_size=file2.file_size
+    file22.open = 1
+    file22.api_file_id =file2.api_file_id
+    file22.version = file2.version
+    file22.yijuhua =file2.yijuhua
+    file22.zongfenjie =file2.zongfenjie
+    file22.timus=file2.timus
+    insert_file(file22)
+    app.logger.info("初始化file22 = %s", file22)
 
     file3 = query_fileByApiFileid("cni5a02lnl91mfbctqg0")
-    file3.create_by= openid
-    file3.id = None
-    insert_file(file3)
-    app.logger.info("初始化file3 = %s", file3)
+    file33 = File();
+    file33.create_by= openid
+    file33.file_name= file3.file_name
+    file33.download_url=file3.download_url
+    file33.file_size=file3.file_size
+    file33.open = 1
+    file33.api_file_id =file3.api_file_id
+    file33.version = file3.version
+    file33.yijuhua =file3.yijuhua
+    file33.zongfenjie =file3.zongfenjie
+    file33.timus=file3.timus
+    insert_file(file33)
+    app.logger.info("初始化file233 = %s", file33)
 
     return jsonify({'message': '初始化成功'})
