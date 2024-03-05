@@ -121,6 +121,18 @@ def query_questionsbyapiid(api_file_id):
         logger.info("query_Questions errorMsg= {} ".format(e))
         return None
 
+#获取单条问题
+def get_one_questionsbyQid(qid):
+    """
+    Questions
+    """
+    try:
+        return Questions.query.filter(Questions.id == qid).first()
+    except OperationalError as e:
+        logger.info("get_one_questionsbyQid errorMsg= {} ".format(e))
+        return None
+
+
 
 def query_filebyfileid(id):
     """

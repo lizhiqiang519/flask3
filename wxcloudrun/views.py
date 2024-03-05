@@ -7,7 +7,7 @@ from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid, insert_records, \
     insert_questions, insert_file, query_filebycreateby, query_questionsbyapiid, query_filebyfileid, delete_file22, \
-    query_wendatisbyapiid, query_fileByApiFileid
+    query_wendatisbyapiid, query_fileByApiFileid, get_one_questionsbyQid
 from wxcloudrun.model import Counters
 from wxcloudrun.modelFile import File
 from wxcloudrun.modelQuestions import Questions
@@ -5934,3 +5934,38 @@ def user_chushihua_pdf():
     app.logger.info("初始化 = %s", openid)
 
     return jsonify({'message': '初始化成功'})
+
+
+@app.route('/questions/by_qid', methods=['POST'])
+def get_questions_by_qid():
+
+    if not request.is_json:
+        return jsonify({'error': 'Missing JSON in request'}), 400
+
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({'error': 'Invalid JSON or empty payload'}), 400
+
+    qid = data.get('qid')
+    if not qid:
+        return jsonify({'error': 'Missing qid'}), 400
+
+    app.logger.info("qid查询问题入参=%s", qid)
+
+    question = get_one_questionsbyQid(qid)
+
+    questionDetail = {
+        'id': question.id,
+        'question': question.question,
+        'option_a': question.option_a,
+        'option_b': question.option_b,
+        'option_c': question.option_c,
+        'option_d': question.option_d,
+        'created_at': question.created_at,
+        'fenxi': question.fenxi,
+        'answer': question.answer,
+        'source': question.source,
+        'api_file_id': question.api_file_id,
+        'file_name': question.file_name
+    }
+    return jsonify(questionDetail), 200
