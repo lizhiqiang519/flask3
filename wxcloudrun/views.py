@@ -21,6 +21,11 @@ from openai import OpenAI
 import re
 from werkzeug.utils import secure_filename
 
+from flask import Flask, request, make_response
+import hashlib
+import xml.etree.ElementTree as ET
+import time
+
 from urllib.parse import urlparse, unquote
 
 # 配置日志记录
@@ -5969,3 +5974,25 @@ def get_questions_by_qid():
         'file_name': question.file_name
     }
     return jsonify(questionDetail), 200
+
+
+@app.route('/jiahao', methods=[ 'POST'])
+def wechat():
+
+    app.logger.info("家好月圆测试")
+    # 处理和回复消息
+    xml_recv = ET.fromstring(request.data)
+    fromUser = xml_recv.find('ToUserName').text
+    toUser = xml_recv.find('FromUserName').text
+    reply_text = "这是回复的文本消息内容"
+
+    reply_xml = f"""
+    <xml>
+    <ToUserName><![CDATA[{toUser}]]></ToUserName>
+    <FromUserName><![CDATA[{fromUser}]]></FromUserName>
+    <CreateTime>{int(time.time())}</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[{reply_text}]]></Content>
+    </xml>
+    """
+    return make_response(reply_xml)
