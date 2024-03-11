@@ -6008,6 +6008,7 @@ def upload_pdf_file_id_v2():
     pdfName = data.get('pdfName')
     openid = data.get('openid')
     api_file_id = data.get('api_file_id')
+    file_size = data.get('file_size')
 
     # api_file_id
     app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s,api_file_id = %s", downloadURL, pdfName,openid,api_file_id)
@@ -6161,7 +6162,7 @@ def upload_pdf_file_id_v2():
         file.download_url = downloadURL
         file.created_at = datetime.now()
         file.open = 1
-        # file.file_size = floor(file_object.bytes / 1024 )
+        file.file_size = file_size
         file.api_file_id = api_file_id
         file.version = "v222"
         file.create_by = openid
