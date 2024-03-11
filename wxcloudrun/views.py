@@ -955,112 +955,6 @@ def get_questions_by_fileid():
 
     return jsonify(questions_data), 200
 
-
-@app.route('/api/calculate-token', methods=['POST'])
-def api_pdf_v1():
-
-    # 解析请求数据
-    data = request.get_json()
-    downloadURL = data.get('downloadURL')
-    pdfName = data.get('pdfName')
-    openid = data.get('openid')
-
-    # 打印信息到控制台
-    print(f"api_pdf_v1 Download URL: {downloadURL}")
-    print(f"api_pdf_v1 PDF Name: {pdfName}")
-    print(f"api_pdf_v1 用户的openid: {openid}")
-
-    app.logger.info("api_pdf_v1传进来的下载链接= %s,PDF名称= %s", downloadURL, pdfName)
-
-    # 当前目录
-    current_path = os.getcwd()
-
-    # 从请求体获取下载链接
-    if not downloadURL:
-        return jsonify({'error': 'Missing URL'}), 400
-
-    try:
-        # 使用requests下载文件
-        response = requests.get(downloadURL)
-        response.raise_for_status()  # 确保请求成功
-
-        # 解析 URL 并提取文件名
-        parsed_url = urlparse(downloadURL)
-        pdf_filename_with_extension = os.path.basename(parsed_url.path)
-
-        # 对 URL 进行解码，以获取正确的文件名（包括中文等字符）
-        decoded_filename = unquote(pdf_filename_with_extension)
-
-        # 去除文件扩展名，假设扩展名为 .pdf
-        filename = decoded_filename.rsplit('.', 1)[0]
-
-        # 获取当前运行的路径，保存文件
-        current_path = os.getcwd()
-        file_path = os.path.join(current_path, filename)
-
-        # 写入文件
-        with open(file_path, 'wb') as f:
-            f.write(response.content)
-
-        # 暗面AI
-
-        client = OpenAI(
-            # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
-            # 3335
-            api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",
-            #api_key = "sk-gpbNCX3bxCQX8fUOQu1KUXj97SVKQQoJuxJSym7eXMMnqWHe",  # 8061
-            #api_key = "sk-fvcU5LTOezeeBcbbFSiXiwWTudu6v3p7uhAblYucKbGg0a1W",  #7077
-            base_url="https://api.moonshot.cn/v1",
-        )
-        # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
-        file_object = client.files.create(file=Path(file_path), purpose="file-extract")
-        app.logger.info("api_pdf_v1文件名称= %s,文件ID= %s",file_object.filename,file_object.id)
-        app.logger.info("api_pdf_v1文件路径= %s,文件大小= %s kb", file_path, file_object.bytes / 1024)
-
-        # 获取结果
-        # file_content = client.files.retrieve_content(file_id=file_object.id)
-        # 注意，之前 retrieve_content api 在最新版本标记了 warning, 可以用下面这行代替
-        # 如果是旧版本，可以用 retrieve_content
-        file_content = client.files.content(file_id=file_object.id).text
-
-        # 上传文件到Moonshot AI
-        headers = {
-            'Authorization': f'Bearer {MOONSHOT_API_KEY}',
-            'Content-Type': 'multipart/form-data'
-        }
-
-        # 使用文件内容计算Token
-        calculate_token_response = requests.post(
-            f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
-            headers=headers,
-            json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content}]}
-        )
-
-        app.logger.info("计算token结果 %s", calculate_token_response)
-        app.logger.info(calculate_token_response)
-
-        # 检查计算Token响应
-        if calculate_token_response.status_code != 200:
-            return jsonify({'error': 'Failed to calculate tokens'}), calculate_token_response.status_code
-
-        # 解析计算Token响应
-        token_data = calculate_token_response.json()
-        total_tokens = token_data.get('data', {}).get('total_tokens')
-
-        app.logger.info("total_tokens %s", total_tokens)
-        app.logger.info("token_data %s", token_data)
-        app.logger.info(token_data)
-        app.logger.info("文件字数 %s", len(file_content))
-
-        app.logger.info(total_tokens)
-
-        # 返回计算结果
-        return jsonify({'total_tokens': total_tokens,'file_words': len(file_content)}), 200
-
-        # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
-    except requests.RequestException as e:
-        return jsonify({'error': 'Failed to get total_tokens', 'details': str(e)}), 500
-
 @app.route('/file/by_fileid', methods=['POST'])
 def get_filedetail_by_fileid():
 
@@ -5996,3 +5890,110 @@ def wechat():
     </xml>
     """
     return make_response(reply_xml)
+
+##计算token和字数
+@app.route('/api/calculate-token', methods=['POST'])
+def api_pdf_v1():
+
+    # 解析请求数据
+    data = request.get_json()
+    downloadURL = data.get('downloadURL')
+    pdfName = data.get('pdfName')
+    openid = data.get('openid')
+
+    # 打印信息到控制台
+    print(f"api_pdf_v1 Download URL: {downloadURL}")
+    print(f"api_pdf_v1 PDF Name: {pdfName}")
+    print(f"api_pdf_v1 用户的openid: {openid}")
+
+    app.logger.info("api_pdf_v1传进来的下载链接= %s,PDF名称= %s", downloadURL, pdfName)
+
+    # 当前目录
+    current_path = os.getcwd()
+
+    # 从请求体获取下载链接
+    if not downloadURL:
+        return jsonify({'error': 'Missing URL'}), 400
+
+    try:
+        # 使用requests下载文件
+        response = requests.get(downloadURL)
+        response.raise_for_status()  # 确保请求成功
+
+        # 解析 URL 并提取文件名
+        parsed_url = urlparse(downloadURL)
+        pdf_filename_with_extension = os.path.basename(parsed_url.path)
+
+        # 对 URL 进行解码，以获取正确的文件名（包括中文等字符）
+        decoded_filename = unquote(pdf_filename_with_extension)
+
+        # 去除文件扩展名，假设扩展名为 .pdf
+        filename = decoded_filename.rsplit('.', 1)[0]
+
+        # 获取当前运行的路径，保存文件
+        current_path = os.getcwd()
+        file_path = os.path.join(current_path, filename)
+
+        # 写入文件
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
+
+        # 暗面AI
+
+        client = OpenAI(
+            # api_key="sk-nFhPcpNc2oBTxAMn7XP5KuL8ldxAKq9SFCky7xeCJzwqwkLV",sk-vdjbCMxXv762YrwrVxdZFWtC2DxrjE3BMOuVtEczmX5afvgV
+            # 3335
+            api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",
+            #api_key = "sk-gpbNCX3bxCQX8fUOQu1KUXj97SVKQQoJuxJSym7eXMMnqWHe",  # 8061
+            #api_key = "sk-fvcU5LTOezeeBcbbFSiXiwWTudu6v3p7uhAblYucKbGg0a1W",  #7077
+            base_url="https://api.moonshot.cn/v1",
+        )
+        # xlnet.pdf 是一个示例文件, 我们支持 pdf, doc 等格式, 目前暂不提供ocr相关能力
+        file_object = client.files.create(file=Path(file_path), purpose="file-extract")
+        app.logger.info("api_pdf_v1文件名称= %s,文件ID= %s",file_object.filename,file_object.id)
+        app.logger.info("api_pdf_v1文件路径= %s,文件大小= %s kb", file_path, file_object.bytes / 1024)
+
+        # 获取结果
+        # file_content = client.files.retrieve_content(file_id=file_object.id)
+        # 注意，之前 retrieve_content api 在最新版本标记了 warning, 可以用下面这行代替
+        # 如果是旧版本，可以用 retrieve_content
+        app.logger.info("暗面返回的文件ID %s",file_object.id)
+        file_content = client.files.content(file_id=file_object.id).text
+
+        # 上传文件到Moonshot AI
+        headers = {
+            'Authorization': f'Bearer {MOONSHOT_API_KEY}',
+            'Content-Type': 'multipart/form-data'
+        }
+
+        # 使用文件内容计算Token
+        calculate_token_response = requests.post(
+            f'{MOONSHOT_API_URL}/tokenizers/estimate-token-count',
+            headers=headers,
+            json={'model': 'moonshot-v1-128k', 'messages': [{'role': 'system', 'content': file_content, 'api_file_id': file_object.id}]}
+        )
+
+        app.logger.info("计算token结果 %s", calculate_token_response)
+        app.logger.info(calculate_token_response)
+
+        # 检查计算Token响应
+        if calculate_token_response.status_code != 200:
+            return jsonify({'error': 'Failed to calculate tokens'}), calculate_token_response.status_code
+
+        # 解析计算Token响应
+        token_data = calculate_token_response.json()
+        total_tokens = token_data.get('data', {}).get('total_tokens')
+
+        app.logger.info("total_tokens %s", total_tokens)
+        app.logger.info("token_data %s", token_data)
+        app.logger.info(token_data)
+        app.logger.info("文件字数 %s", len(file_content))
+
+        app.logger.info(total_tokens)
+
+        # 返回计算结果
+        return jsonify({'total_tokens': total_tokens,'file_words': len(file_content)}), 200
+
+        # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+    except requests.RequestException as e:
+        return jsonify({'error': 'Failed to get total_tokens', 'details': str(e)}), 500
