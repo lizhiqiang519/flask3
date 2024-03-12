@@ -6075,7 +6075,7 @@ def upload_pdf_file_id_v2():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个老师，请认真阅读" + "全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（目录标题，含序号）、content（该目录的内容的总结）），然后从专业的角度找出最关键的10个概念及解释（返回的字段是gainian,gainian是一个list结构，里面是map，map包含的key有title（关键词）、content（概念对应的解释））"}
+             "content": "你是一个老师，请认真阅读" + "全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（目录标题，含序号）、content（该目录的内容的总结）），然后从专业的角度找出最关键的15个概念及解释（返回的字段是gainian,gainian是一个list结构，里面是map，map包含的key有title（关键词）、content（概念对应的解释））"}
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
@@ -6163,6 +6163,280 @@ def upload_pdf_file_id_v2():
         file.created_at = datetime.now()
         file.open = 1
         file.file_size = file_size
+        file.api_file_id = api_file_id
+        file.version = "v222"
+        file.create_by = openid
+        file.zongfenjie = extracted_json3
+        file.yijuhua = extracted_json3333.get("zongjie", "")
+        file.timus = process_input_string("v2222")
+        insert_file(file)
+
+        #------------------------------------------问答题-----------------------------------------------------------
+        messagesWenda = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
+            {"role": "user",
+             "content": "你是一个专业老师，请认真阅读全部内容，提供6道文档中重要知识点相关的问答题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+        ]
+
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completionWenda= client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messagesWenda,
+            temperature=0.3,
+        )
+
+        #插入记录
+        textWenda = completionWenda.choices[0].message.content;
+        recordWenda = Records()
+        recordWenda.remark = textWenda
+        recordWenda.remark2 = "wenda"
+        recordWenda.created_at = datetime.now()
+        insert_records(recordWenda)
+
+        # # # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(textWenda)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_jsonWenda = '\n\n'.join(matches)
+
+        #转成list
+        my_listWenda= json.loads(extracted_jsonWenda)
+
+        for question_dict in my_listWenda:
+            # 创建 Records 实例，确保字段匹配
+            question_wenda = Wendati(
+                question=question_dict.get('question', ''),
+                fenxi=question_dict.get('fenxi', ''),
+                source=question_dict.get('source', ''),
+                file_name= pdfName,
+                api_file_id= api_file_id,
+                created_at = datetime.now()
+            )
+            # 调用插入方法
+            app.logger.info("extracted_jsonWenda_v22222")
+            insert_questions(question_wenda)
+        # ------------------------------------------问答题-----------------------------------------------------------
+        app.logger.info('my_list1:')
+        app.logger.info(my_list1)
+
+        """
+        处理问题列表并插入到数据库
+        :param questions_list: 包含多个问题字典的列表
+        """
+        my_list = my_list1 + my_list2;
+
+        for question_dict in my_list:
+            # 创建 Records 实例，确保字段匹配
+            question_record = Questions(
+                question=question_dict.get('question', ''),
+                option_a=question_dict.get('option_a', ''),
+                option_b=question_dict.get('option_b', ''),
+                option_c=question_dict.get('option_c', ''),
+                option_d=question_dict.get('option_d', ''),
+                answer=question_dict.get('answer', ''),
+                fenxi=question_dict.get('fenxi', ''),
+                source=question_dict.get('source', ''),
+                file_name= pdfName,
+                api_file_id= api_file_id,
+                created_at = datetime.now()
+            )
+            # 调用插入方法
+            app.logger.info("question_record888_v11111")
+            insert_questions(question_record)
+
+        # 返回成功消息和文件路径
+        return jsonify({'message': 'successfully'})
+
+    # return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+    except requests.RequestException as e:
+        return jsonify({'error': 'Failed to download the file', 'details': str(e)}), 500
+
+
+#处理文本
+@app.route('/api/pdf/wenben_v32', methods=['POST'])
+def upload_wenben_v32():
+    # 解析请求数据
+    data = request.get_json()
+    downloadURL = data.get('downloadURL')
+    pdfName = data.get('pdfName')
+    openid = data.get('openid')
+    app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s", downloadURL, pdfName,openid)
+    operation_type = data.get('operation_type')
+    file_words = data.get('file_words')
+
+    # 从请求体获取下载链接
+    if not downloadURL:
+        return jsonify({'error': 'Missing URL'}), 400
+
+    try:
+        #将文件保存在服务器里面
+        # 使用requests下载文件
+        response = requests.get(downloadURL)
+        response.raise_for_status()  # 确保请求成功
+        # 解析 URL 并提取文件名
+        parsed_url = urlparse(downloadURL)
+        pdf_filename_with_extension = os.path.basename(parsed_url.path)
+        # 对 URL 进行解码，以获取正确的文件名（包括中文等字符）
+        decoded_filename = unquote(pdf_filename_with_extension)
+        # 去除文件扩展名，假设扩展名为 .pdf
+        filename = decoded_filename.rsplit('.', 1)[0]
+        # 获取当前运行的路径，保存文件
+        current_path = os.getcwd()
+        file_path = os.path.join(current_path, filename)
+        # 写入文件
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
+        # 暗面AI
+        client = OpenAI(
+            api_key="sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX",
+            base_url="https://api.moonshot.cn/v1",
+        )
+        file_object = client.files.create(file=Path(file_path), purpose="file-extract")
+        #处理的文本
+        file_content = client.files.content(file_id=file_object.id).text
+        api_file_id = file_object.id
+
+        #切割文本
+        # 计算字符串的长度，并整除2得到中间位置
+        mid_point = len(file_content) // 2
+        # 使用字符串切片获取前半部分
+        first_half = file_content[:mid_point]
+        # 使用字符串切片获取后半部分
+        second_half = file_content[mid_point:]
+
+        # 把它放进请求中
+        messages1 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": first_half,
+            },
+            {"role": "user",
+             "content": "你是一个老师，请认真阅读全部内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+        ]
+
+        messages2 = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": second_half,
+            },
+            {"role": "user",
+             "content": "你是一个老师，请认真阅读全部内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+        ]
+
+        messagesZongJie = [
+            {
+                "role": "system",
+                "content": "你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一些涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。",
+            },
+            {
+                "role": "system",
+                "content": file_content,
+            },
+            {"role": "user",
+             "content": "你是一个老师，请认真阅读" + "全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（目录标题，含序号）、content（该目录的内容的总结）），然后从专业的角度找出最关键的15个概念及解释（返回的字段是gainian,gainian是一个list结构，里面是map，map包含的key有title（关键词）、content（概念对应的解释））"}
+        ]
+
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion1 = client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messages1,
+            temperature=0.3,
+        )
+        #------------------------1------------------------------
+        #第一次返回的答案
+        text1 = completion1.choices[0].message.content
+
+        record1 = Records()
+        record1.remark = text1
+        record1.remark2 = "w32"
+        record1.created_at = datetime.now()
+        insert_records(record1)
+
+        # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text1)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json1 = '\n\n'.join(matches)
+        #转成list
+        my_list1 = json.loads(extracted_json1)
+
+        #----------------------------2-----------------------------------
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion2 = client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messages2,
+            temperature=0.3,
+        )
+        #第2次返回的答案
+        text2 = completion2.choices[0].message.content
+
+        record2 = Records()
+        record2.remark = text2
+        record2.remark2 = "w32"
+        record2.created_at = datetime.now()
+        insert_records(record2)
+
+        # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text2)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json2 = '\n\n'.join(matches)
+        #转成list
+        my_list2 = json.loads(extracted_json2)
+
+        #----------------------------2-----------------------------------
+
+
+        # --------------------------3-------------------------------
+
+        # 然后调用 chat-completion, 获取 kimi 的回答
+        completion3 = client.chat.completions.create(
+            model="moonshot-v1-32k",
+            messages=messagesZongJie,
+            temperature=0.3,
+        )
+
+        text3 = completion3.choices[0].message.content;
+        record3 = Records()
+        record3.remark = text3
+        record3.remark2 = "zongjie"
+        record3.created_at = datetime.now()
+        insert_records(record3)
+
+        # # # 使用正则表达式匹配 ```json 和 ``` 之间的内容
+        pattern = re.compile(r"```json(.*?)```", re.DOTALL)
+        matches = pattern.findall(text3)
+        # 将所有匹配的内容连接成一个字符串，每个匹配项之间用两个换行符分隔
+        extracted_json3 = '\n\n'.join(matches)
+
+        # 使用json.loads()将字符串解析为字典
+        extracted_json3333 = json.loads(extracted_json3)
+
+
+        #插入文件记录
+
+        file = File()
+        file.file_name = pdfName
+        file.download_url = downloadURL
+        file.created_at = datetime.now()
+        file.open = 1
+        file.file_words = file_words
+        file.operation_type = operation_type
         file.api_file_id = api_file_id
         file.version = "v222"
         file.create_by = openid
