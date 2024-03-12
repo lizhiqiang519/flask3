@@ -6440,6 +6440,7 @@ def upload_wenben_v32():
         file.api_file_id = api_file_id
         file.version = "v222"
         file.create_by = openid
+        file.file_size = 10086
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
         file.timus = 16
