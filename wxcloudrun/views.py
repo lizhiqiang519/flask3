@@ -6348,7 +6348,7 @@ def upload_wenben_v32():
                 "content": file_content,
             },
             {"role": "user",
-             "content": "你是一个老师，请认真阅读" + "全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（目录标题，含序号）、content（该目录的内容的总结）），然后从专业的角度找出最关键的15个概念及解释（返回的字段是gainian,gainian是一个list结构，里面是map，map包含的key有title（关键词）、content（概念对应的解释））"}
+             "content": "你是一个老师，请认真阅读" + "全部内容，最终返回的是json的字符串（用```json和```包围起来）。先从专业的角度总结该文档的内容（返回字段是zongjie），然后从专业的角度分点详细总结出各个完整的知识点（返回的字段是fendian,fendian是一个list结构，里面是map，map包含的key有title（目录标题，含序号）、content（该目录的内容的总结）），然后从专业的角度找出最关键的10个概念及解释（返回的字段是gainian,gainian是一个list结构，里面是map，map包含的key有title（关键词）、content（概念对应的解释））"}
         ]
 
         # 然后调用 chat-completion, 获取 kimi 的回答
