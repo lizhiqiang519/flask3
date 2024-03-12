@@ -6270,7 +6270,7 @@ def upload_wenben_v32():
     operation_type = data.get('operation_type')
     file_words = data.get('file_words')
 
-    app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s，字数=%s,operation_type =&s ", downloadURL, pdfName,openid,file_words,operation_type)
+    app.logger.info("传进来的下载链接= %s,PDF名称= %s,用户的openid=%s，字数=%s,operation_type =%s ", downloadURL, pdfName,openid,file_words,operation_type)
     # 从请求体获取下载链接
     if not downloadURL:
         return jsonify({'error': 'Missing URL'}), 400
