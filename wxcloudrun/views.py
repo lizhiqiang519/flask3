@@ -6322,7 +6322,7 @@ def upload_wenben_v32():
                 "content": first_half,
             },
             {"role": "user",
-             "content": "你是一个老师，请认真阅读全部内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+             "content": "你是一个老师，请认真阅读全部内容，提供4道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
         ]
 
         messages2 = [
@@ -6335,7 +6335,7 @@ def upload_wenben_v32():
                 "content": second_half,
             },
             {"role": "user",
-             "content": "你是一个老师，请认真阅读全部内容，提供5道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
+             "content": "你是一个老师，请认真阅读全部内容，提供4道书中重要知识点相关的选择题，返回的格式要求：list的json字符串，其中list里面包含map，每个map包含这些属性：question（问题）、option_a(选项A,内容开头含A.)、option_b(选项B,内容开头含B.)、option_c(选项C,内容开头含C.)、option_d(选项D,内容开头含D.)、answer（答案，单选A或B或C或D）、fenxi（答案分析解释、知识点复述）、source（答案来源，具体到哪一章哪一节或目录标题，不包含pdf文件名）"}
         ]
 
         messagesZongJie = [
