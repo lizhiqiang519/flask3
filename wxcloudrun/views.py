@@ -6442,7 +6442,7 @@ def upload_wenben_v32():
         file.create_by = openid
         file.zongfenjie = extracted_json3
         file.yijuhua = extracted_json3333.get("zongjie", "")
-        file.timus = process_input_string("v2222")
+        file.timus = 16
         insert_file(file)
 
         #------------------------------------------问答题-----------------------------------------------------------

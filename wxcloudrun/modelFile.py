@@ -23,3 +23,7 @@ class File(db.Model):
     zongfenjie= db.Column(db.TEXT, default="")
     #题目数量
     timus = db.Column(db.Integer, default="")
+    #文件字数
+    file_words = db.Column(db.Integer, default="")
+    #操作类型：1、上传文件；2、上传文本
+    operation_type = db.Column(db.Integer, default="")
