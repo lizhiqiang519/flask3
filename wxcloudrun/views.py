@@ -28,12 +28,32 @@ import time
 
 from urllib.parse import urlparse, unquote
 
+from gradio_client import Client
+
 # 配置日志记录
 logging.basicConfig(level=logging.INFO)
 
 # 设置您的Moonshot AI API密钥
 MOONSHOT_API_KEY = 'sk-IaFmuC7stQNyYEh63CJVeo94aqwrD2FozqOvRGTLlwPFLOsX'
 MOONSHOT_API_URL = 'https://api.moonshot.cn/v1'
+
+
+# 创建模型客户端
+client2 = Client("https://modelscope-anytext.hf.space/--replicas/9zm4s/")
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # 从请求中获取参数
+    image_width = request.json.get('image_width')
+    rect_position = request.json.get('rect_position')
+    draw_position = request.json.get('draw_position')
+    fn_index = request.json.get('fn_index')
+
+    # 调用模型预测
+    result = client2.predict(image_width, rect_position, draw_position, fn_index)
+
+    # 返回预测结果
+    return jsonify(result)
 
 @app.route('/')
 def index():
