@@ -41,16 +41,15 @@ MOONSHOT_API_URL = 'https://api.moonshot.cn/v1'
 # 创建模型客户端
 client2 = Client("https://modelscope-anytext.hf.space/--replicas/9zm4s/")
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict22', methods=['POST'])
 def predict():
     # 从请求中获取参数
-    image_width = request.json.get('image_width')
-    rect_position = request.json.get('rect_position')
-    draw_position = request.json.get('draw_position')
-    fn_index = request.json.get('fn_index')
+    app.logger.info('123225633111')
+    result = client2.predict(256, "https://6d6f-money-2ghu73o419d37bcf-1304789699.tcb.qcloud.la/1706675385080.png?sign=f465f988dcaafe5258127b9c186a6e75&t=1710817690",
+                            "https://6d6f-money-2ghu73o419d37bcf-1304789699.tcb.qcloud.la/1706675385080.png?sign=f465f988dcaafe5258127b9c186a6e75&t=1710817690",
+                            fn_index=43)
 
-    # 调用模型预测
-    result = client2.predict(image_width, rect_position, draw_position, fn_index)
+    app.logger.info(result)
 
     # 返回预测结果
     return jsonify(result)
